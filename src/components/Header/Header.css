@@ -55,3 +55,8 @@
     background-color: #1a4bcc;
     color: white;
   }
+
+  .logo-image {
+    height: 50px; /* Adjust as needed */
+    width: auto;
+  }

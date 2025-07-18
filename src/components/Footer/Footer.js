@@ -6,12 +6,12 @@ function Footer() {
     <footer className="footer">
       <div className="footer-content">
         <div className="footer-section">
-          <h3>KALAFO</h3>
+          <h3>Kalafo</h3>
           <p>Revolutionizing cardiac care with digital stethoscope technology</p>
         </div>
         <div className="footer-section">
           <h4>Quick Links</h4>
-          <a href="#features">Features</a>
+          <a href="#home">Home</a>
           <a href="#features">Features</a>
           <a href="#about">About</a>
           <a href="#contact">Contact</a>
