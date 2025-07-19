@@ -96,15 +96,11 @@ python -m venv venv
 # Activate virtual environment
 # Windows:
 venv\Scripts\activate
-# macOS/Linux:
-source venv/bin/activate
+# Linux:
+source venv/Scripts/activate
 
 # Install dependencies
 pip install -r requirements.txt
-
-# Create environment file
-cp .env.example .env
-# Edit .env with your configuration
 
 # Initialize database
 python init_db.py
@@ -189,7 +185,7 @@ python init_db.py
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👨‍💻 Developer
+## 👨‍💻 Developers
 
 **[To be updated :)]**
 
