@@ -1,4 +1,3 @@
-# app.py - Fixed JWT Identity Issue
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -240,6 +239,8 @@ def admin_dashboard():
         print(f"❌ ADMIN DASHBOARD ERROR: {str(e)}")
         print(f"❌ ADMIN DASHBOARD TRACEBACK: {traceback.format_exc()}")
         return jsonify({'error': str(e)}), 500
+
+# REMOVED THE DUPLICATE @token_required ENDPOINT - THIS WAS THE PROBLEM!
 
 @app.route('/api/dashboard/patient', methods=['GET'])
 @jwt_required()
