@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
@@ -94,7 +94,7 @@ function Login() {
             </button>
             
             <div className="register-link">
-              Don't have an account? <a href="/register">Register here</a>
+              Don't have an account? <Link to="/register">Register here</Link>
             </div>
           </form>
           

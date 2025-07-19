@@ -16,8 +16,8 @@ function Landing() {
             <h1>Welcome to Kalafo</h1>
             <p>Your trusted telemedicine platform for remote healthcare consultations</p>
             <div className="hero-buttons">
-              <a href="/login" className="btn btn-primary">Get Started</a>
-              <a href="#features" className="btn btn-secondary">Learn More</a>
+              <a href="/register" className="btn btn-primary">Get Started</a>
+              <a href="/login" className="btn btn-secondary">Login</a>
             </div>
           </div>
         </section>

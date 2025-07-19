@@ -26,8 +26,8 @@ def init_database():
         doctor_user = User(
             email='doctor@kalafo.com',
             role='doctor',
-            first_name='John',
-            last_name='Smith'
+            first_name='Dr.',
+            last_name='Tebza'
         )
         doctor_user.set_password('doctor123')
         db.session.add(doctor_user)
@@ -36,8 +36,8 @@ def init_database():
         patient_user = User(
             email='patient@kalafo.com',
             role='patient',
-            first_name='Jane',
-            last_name='Doe'
+            first_name='karabo',
+            last_name='Smith'
         )
         patient_user.set_password('patient123')
         db.session.add(patient_user)
