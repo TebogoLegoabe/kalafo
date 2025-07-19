@@ -1,0 +1,13 @@
+:root {
+    --primary-color: #2d5bff; /* Blue from the logo */
+    --secondary-color: #00c6ab; /* Teal from the logo */
+    --accent-color: #ff6b6b;
+    --dark-color: #2c3e50;
+    --light-color: #f8f9fa;
+    --white: #ffffff;
+    --text-dark: #333333;
+    --text-light: #f8f9fa;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+  }
