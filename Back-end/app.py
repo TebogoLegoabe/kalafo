@@ -359,6 +359,42 @@ def get_users():
         print(f"❌ GET USERS ERROR: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/patients', methods=['GET'])
+@jwt_required()
+def get_patients():
+    try:
+        current_user_id = int(get_jwt_identity())
+        user = User.query.get(current_user_id)
+        
+        # Allow doctors and admins to view patients
+        if user.role not in ['doctor', 'admin']:
+            return jsonify({'error': 'Access denied'}), 403
+        
+        # Get all patients
+        patients = User.query.filter_by(role='patient').all()
+        
+        patients_data = []
+        for patient in patients:
+            # Get consultation count for each patient
+            consultation_count = Consultation.query.filter_by(patient_id=patient.id).count()
+            last_consultation = Consultation.query.filter_by(
+                patient_id=patient.id
+            ).order_by(Consultation.scheduled_time.desc()).first()
+            
+            patient_info = patient.to_dict()
+            patient_info['consultation_count'] = consultation_count
+            patient_info['last_consultation'] = last_consultation.scheduled_time.isoformat() if last_consultation else None
+            patients_data.append(patient_info)
+        
+        return jsonify({
+            'patients': patients_data,
+            'total_count': len(patients_data)
+        }), 200
+        
+    except Exception as e:
+        print(f"❌ GET PATIENTS ERROR: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/test-jwt', methods=['GET'])
 @jwt_required()
 def test_jwt():
