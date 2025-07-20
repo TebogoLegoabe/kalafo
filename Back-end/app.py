@@ -25,7 +25,10 @@ db = SQLAlchemy(app)
 jwt = JWTManager(app)
 CORS(app, resources={
     r"/api/*": {
-        "origins": ["http://localhost:3000"],
+        "origins": [
+            "http://localhost:3000",           # Local development
+            "https://kalafo-2-0.vercel.app"   # Your Vercel frontend
+        ],
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"]
     }
@@ -428,10 +431,21 @@ def test_no_jwt():
 def health_check():
     return jsonify({'status': 'healthy', 'message': 'Kalafo API is running'}), 200
 
+# Production configuration for Render
+def create_app():
+    # Create tables when app starts
+    with app.app_context():
+        db.create_all()
+        print("✅ Database tables ensured")
+    return app
+
+# For production deployment
 if __name__ == '__main__':
     # Create tables when app starts
     with app.app_context():
         db.create_all()
         print("✅ Database tables ensured")
     
-    app.run(debug=True, port=5000)
+    # Use environment PORT for production
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
