@@ -23,16 +23,16 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)
 # Initialize extensions
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
-CORS(app, resources={
-    r"/api/*": {
-        "origins": [
-            "http://localhost:3000",
-            "https://kalafo-2-0.vercel.app"
-        ],
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"]
-    }
-})
+CORS(app, 
+     origins=[
+         "http://localhost:3000",
+         "https://kalafo-2-0.vercel.app",
+         "https://*.vercel.app"
+     ], 
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], 
+     allow_headers=["Content-Type", "Authorization"],
+     supports_credentials=True
+)
 # User Model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
