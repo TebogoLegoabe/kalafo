@@ -26,11 +26,13 @@ jwt = JWTManager(app)
 CORS(app, resources={
     r"/api/*": {
         "origins": [
-            "http://localhost:3000",                  
-            "https://kalafo-2-0.vercel.app"            
+            "http://localhost:3000",           # Local development
+            "https://kalafo-2-0.vercel.app",   # Your Vercel frontend
+            "https://*.vercel.app"             # All Vercel domains
         ],
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"]
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
     }
 })
 
