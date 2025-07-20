@@ -1,0 +1,817 @@
+/* VideoConsultation.css - Updated for Demo Version */
+.video-consultation {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f5f7fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Header */
+.consultation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: white;
+  border-bottom: 2px solid #e1e8ed;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.consultation-header h2 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.5rem;
+}
+
+.consultation-info {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #7f8c8d;
+}
+
+.device-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 500;
+  font-size: 0.8rem;
+}
+
+.device-status.connected {
+  background: #d5f4e6;
+  color: #27ae60;
+}
+
+.device-status.disconnected {
+  background: #fadbd8;
+  color: #e74c3c;
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+/* Main Content */
+.consultation-main {
+  display: flex;
+  flex: 1;
+  gap: 2rem;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+/* Video Section */
+.video-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.video-container {
+  position: relative;
+  flex: 1;
+  background: #2c3e50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Demo Video Styles */
+.demo-video {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.demo-video.remote-video {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.demo-video.local-video {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 200px;
+  height: 150px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 3px solid white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.demo-video-content {
+  text-align: center;
+  color: white;
+  position: relative;
+  z-index: 2;
+}
+
+.demo-video-content.small {
+  transform: scale(0.7);
+}
+
+.demo-avatar {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.demo-avatar.small {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.demo-video-content h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.demo-video-content p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.video-effects {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+}
+
+.pulse-animation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  margin: -50px 0 0 -50px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  animation: videoPulse 2s ease-out infinite;
+}
+
+@keyframes videoPulse {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.video-off-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.call-starting {
+  text-align: center;
+  color: white;
+}
+
+.call-starting h3 {
+  margin: 0 0 2rem 0;
+  font-size: 2rem;
+}
+
+.loading-dots {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.loading-dots span {
+  width: 12px;
+  height: 12px;
+  background: white;
+  border-radius: 50%;
+  animation: loadingBounce 1.4s ease-in-out infinite both;
+}
+
+.loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+.loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes loadingBounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+.video-label {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Video Controls */
+.video-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  background: #34495e;
+}
+
+.control-btn {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  min-width: 120px;
+}
+
+.control-btn.start-call {
+  background: #27ae60;
+  color: white;
+}
+
+.control-btn.start-call:hover {
+  background: #2ecc71;
+  transform: translateY(-2px);
+}
+
+.control-btn:not(.start-call):not(.end-call) {
+  background: #95a5a6;
+  color: white;
+}
+
+.control-btn:not(.start-call):not(.end-call):hover {
+  background: #7f8c8d;
+}
+
+.control-btn.muted,
+.control-btn.video-off {
+  background: #e74c3c;
+}
+
+.control-btn.end-call {
+  background: #e74c3c;
+  color: white;
+}
+
+.control-btn.end-call:hover {
+  background: #c0392b;
+}
+
+/* Patient Side Panel Styles */
+.patient-side-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  overflow-y: auto;
+  gap: 1.5rem;
+}
+
+.patient-info-card,
+.patient-instructions-card,
+.patient-call-info {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  border-left: 4px solid #667eea;
+}
+
+.patient-info-card h3,
+.patient-instructions-card h3,
+.patient-call-info h3 {
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  font-size: 1.2rem;
+}
+
+.consultation-details p {
+  margin: 0.5rem 0;
+  color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+.consultation-details strong {
+  color: #667eea;
+}
+
+.patient-monitoring-status {
+  background: linear-gradient(135deg, #d5f4e6, #e8f5e8);
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+  border-left: 4px solid #27ae60;
+}
+
+.monitoring-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  color: #27ae60;
+}
+
+.pulse-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #27ae60;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.call-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.call-stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 6px;
+  border-left: 3px solid #667eea;
+}
+
+.stat-label {
+  font-weight: 500;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.stat-value {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+.patient-emergency {
+  display: flex;
+  justify-content: center;
+}
+
+.patient-emergency-btn {
+  background: #e74c3c !important;
+  color: white;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.patient-emergency-btn:hover {
+  background: #c0392b !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+/* Health Monitoring Section - Only visible for doctors */
+.health-monitoring-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.monitoring-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #ecf0f1;
+}
+
+.monitoring-header h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.3rem;
+}
+
+.body-part-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.body-part-selector label {
+  font-weight: 500;
+  color: #7f8c8d;
+}
+
+.body-part-selector select {
+  padding: 0.5rem 1rem;
+  border: 2px solid #bdc3c7;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background: white;
+  color: #2c3e50;
+}
+
+/* Current Vitals */
+.current-vitals {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.vital-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border-left: 4px solid #3498db;
+  transition: transform 0.3s ease;
+}
+
+.vital-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.vital-card.primary {
+  border-left-color: #e74c3c;
+  background: linear-gradient(135deg, #ffebee, #f8f9fa);
+}
+
+.vital-icon {
+  font-size: 2rem;
+  opacity: 0.8;
+}
+
+.vital-info {
+  flex: 1;
+}
+
+.vital-label {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.vital-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 0.25rem;
+}
+
+.vital-status {
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+/* Real-time Chart */
+.real-time-chart {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.chart-header h4 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.recording-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.record-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.record-btn.start {
+  background: #e74c3c;
+  color: white;
+}
+
+.record-btn.start:hover {
+  background: #c0392b;
+  transform: translateY(-1px);
+}
+
+.record-btn.stop {
+  background: #95a5a6;
+  color: white;
+}
+
+.record-btn.stop:hover {
+  background: #7f8c8d;
+}
+
+.record-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Chart Container */
+.chart-container {
+  height: 200px;
+  background: white;
+  border-radius: 6px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heart-rate-chart {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-grid {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 1rem 0;
+}
+
+.chart-bar {
+  flex: 1;
+  min-height: 20px;
+  border-radius: 2px 2px 0 0;
+  position: relative;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.bar-value {
+  position: absolute;
+  top: -20px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.chart-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #7f8c8d;
+  margin-top: 0.5rem;
+}
+
+.chart-placeholder {
+  text-align: center;
+  color: #7f8c8d;
+}
+
+.chart-placeholder p {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+.chart-placeholder small {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* Instructions */
+.monitoring-instructions {
+  background: #e8f4f8;
+  border-radius: 8px;
+  padding: 1.5rem;
+  border-left: 4px solid #3498db;
+}
+
+.monitoring-instructions h4 {
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+}
+
+.instruction-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+  color: #2c3e50;
+}
+
+.step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: #3498db;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+/* Emergency Controls */
+.emergency-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  background: #ecf0f1;
+  border-top: 1px solid #bdc3c7;
+  flex-wrap: wrap;
+}
+
+.emergency-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  background: #f39c12;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.emergency-btn:hover {
+  background: #e67e22;
+  transform: translateY(-1px);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .consultation-main {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .video-section {
+    height: 400px;
+  }
+  
+  .current-vitals {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .patient-side-panel {
+    height: auto;
+  }
+  
+  .call-stats {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .call-stat {
+    flex: 1;
+    min-width: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .consultation-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .consultation-info {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .consultation-main {
+    padding: 1rem;
+  }
+  
+  .demo-video.local-video {
+    width: 120px;
+    height: 90px;
+    bottom: 10px;
+    right: 10px;
+  }
+  
+  .video-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .control-btn {
+    min-width: auto;
+  }
+  
+  .current-vitals {
+    grid-template-columns: 1fr;
+  }
+  
+  .monitoring-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .chart-container {
+    height: 150px;
+  }
+  
+  .emergency-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .patient-side-panel {
+    gap: 1rem;
+  }
+  
+  .call-stats {
+    flex-direction: column;
+  }
+  
+  .call-stat {
+    min-width: auto;
+  }
+}
