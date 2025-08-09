@@ -26,7 +26,7 @@ jwt = JWTManager(app)
 CORS(app, 
      origins=[
          "http://localhost:3000",
-         "https://kalafo-2-0.vercel.app",
+         "https://kalafo-telemedicine.vercel.app",
          "https://*.vercel.app"
      ], 
      methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], 
