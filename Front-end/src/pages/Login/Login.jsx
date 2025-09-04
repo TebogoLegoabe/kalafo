@@ -106,8 +106,7 @@ function Login() {
               <div className="welcome-content">
                 <h1>Welcome Back</h1>
                 <p className="welcome-subtitle">
-                Sign in to access your Kalafo dashboard and continue providing exceptional healthcare.
-
+                  Sign in to access your Kalafo dashboard and continue providing exceptional healthcare.
                 </p>
               </div>
             </div>
@@ -197,8 +196,14 @@ function Login() {
                   >
                     {loading ? (
                       <>
-                        <span className="loading-spinner"></span>
-                        Signing In...
+                        <div className="loading-spinner">
+                          <span>Signing In</span>
+                          <div className="loading-dots">
+                            <span className="loading-dot"></span>
+                            <span className="loading-dot"></span>
+                            <span className="loading-dot"></span>
+                          </div>
+                        </div>
                       </>
                     ) : (
                       <>
@@ -219,7 +224,7 @@ function Login() {
           </div>
         </div>
       </main>
-
+      
       <Footer />
     </div>
   );

@@ -106,14 +106,6 @@ function Landing() {
                 <h3>Wireless Connectivity</h3>
                 <p>Bluetooth and Wi-Fi enabled for effortless data transmission and remote consultations.</p>
               </div>
-              
-              <div className="feature-card">
-                <div className="feature-icon">
-                  <FaBatteryFull />
-                </div>
-                <h3>Long Battery Life</h3>
-                <p>Up to 24 hours of continuous use with fast charging capabilities.</p>
-              </div>
             </div>
           </div>
         </section>

@@ -222,7 +222,6 @@ function Register() {
                 <h1>Join Kalafo</h1>
                 <p className="welcome-subtitle">
                   Start your journey towards better healthcare with our revolutionary digital stethoscope platform.
-                  
                 </p>
               </div>
             </div>
@@ -443,8 +442,14 @@ function Register() {
                   >
                     {loading ? (
                       <>
-                        <span className="loading-spinner"></span>
-                        Creating Account...
+                        <div className="loading-spinner">
+                          <span>Creating Account</span>
+                          <div className="loading-dots">
+                            <span className="loading-dot"></span>
+                            <span className="loading-dot"></span>
+                            <span className="loading-dot"></span>
+                          </div>
+                        </div>
                       </>
                     ) : (
                       <>
