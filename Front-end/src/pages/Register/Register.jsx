@@ -222,35 +222,8 @@ function Register() {
                 <h1>Join Kalafo</h1>
                 <p className="welcome-subtitle">
                   Start your journey towards better healthcare with our revolutionary digital stethoscope platform.
+                  
                 </p>
-                
-                <div className="benefits-list">
-                  <div className="benefit-item">
-                    <FaCheckCircle className="benefit-icon" />
-                    <div>
-                      <h4>Advanced Diagnostics</h4>
-                      <p>Crystal-clear digital audio with AI-powered analysis</p>
-                    </div>
-                  </div>
-                  
-                  <div className="benefit-item">
-                    <FaCheckCircle className="benefit-icon" />
-                    <div>
-                      <h4>Remote Consultations</h4>
-                      <p>Connect with patients anywhere, anytime</p>
-                    </div>
-                  </div>
-                  
-                  <div className="benefit-item">
-                    <FaCheckCircle className="benefit-icon" />
-                    <div>
-                      <h4>HIPAA Compliant</h4>
-                      <p>Enterprise-grade security for patient data</p>
-                    </div>
-                  </div>
-                </div>
-                
-              
               </div>
             </div>
 

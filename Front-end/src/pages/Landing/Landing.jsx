@@ -101,22 +101,6 @@ function Landing() {
               
               <div className="feature-card">
                 <div className="feature-icon">
-                  <FaShieldAlt />
-                </div>
-                <h3>HIPAA Compliant</h3>
-                <p>Enterprise-grade security ensuring patient data privacy and regulatory compliance.</p>
-              </div>
-              
-              <div className="feature-card">
-                <div className="feature-icon">
-                  <FaEye />
-                </div>
-                <h3>AI-Powered Analysis</h3>
-                <p>Machine learning algorithms assist in detecting abnormal heart sounds and murmurs.</p>
-              </div>
-              
-              <div className="feature-card">
-                <div className="feature-icon">
                   <FaWifi />
                 </div>
                 <h3>Wireless Connectivity</h3>
@@ -166,7 +150,7 @@ function Landing() {
                     <div className="stat-icon">
                       <FaStethoscope />
                     </div>
-                    <div className="stat-number">1+</div>
+                    <div className="stat-number">1</div>
                     <div className="stat-label">Years of Innovation</div>
                   </div>
 
@@ -174,7 +158,7 @@ function Landing() {
                     <div className="stat-icon">
                       <HiUserGroup />
                     </div>
-                    <div className="stat-number">1K+</div>
+                    <div className="stat-number">5+</div>
                     <div className="stat-label">Healthcare Professionals</div>
                   </div>
 
@@ -182,7 +166,7 @@ function Landing() {
                     <div className="stat-icon">
                       <HiGlobeAlt />
                     </div>
-                    <div className="stat-number">1+</div>
+                    <div className="stat-number">1</div>
                     <div className="stat-label">Countries Served</div>
                   </div>
 
