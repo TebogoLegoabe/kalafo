@@ -1,11 +1,12 @@
-// src/components/Header/Header.jsx
+// src/components/Header/Header.jsx - Simplified Version
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import './Header.css';
 
 function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,6 +25,33 @@ function Header() {
     setIsMobileMenuOpen(false);
   };
 
+  // Function to create navigation links
+  const createNavLink = (href, text) => {
+    // If we're on the home page, use anchor links
+    if (location.pathname === '/') {
+      return (
+        <a 
+          href={href} 
+          onClick={closeMobileMenu}
+          className="nav-link"
+        >
+          {text}
+        </a>
+      );
+    } else {
+      // If we're on another page, navigate to home with hash
+      return (
+        <Link 
+          to={`/${href}`} 
+          onClick={closeMobileMenu}
+          className="nav-link"
+        >
+          {text}
+        </Link>
+      );
+    }
+  };
+
   return (
     <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
       <div className="container">
@@ -35,7 +63,7 @@ function Header() {
             style={{
               marginRight: 'auto',
               fontWeight: 'bold',
-              color: '#0da9e7ff', // Example color, adjust as needed
+              color: '#0da9e7ff',
               textDecoration: 'none',
               fontSize: '1.2em',
               letterSpacing: '2px'
@@ -51,10 +79,10 @@ function Header() {
 
           {/* Navigation */}
           <nav className={`nav ${isMobileMenuOpen ? 'nav-open' : ''}`}>
-            <a href="#home" onClick={closeMobileMenu}>Home</a>
-            <a href="#features" onClick={closeMobileMenu}>Features</a>
-            <a href="#about" onClick={closeMobileMenu}>About</a>
-            <a href="#contact" onClick={closeMobileMenu}>Contact</a>
+            {createNavLink('#home', 'Home')}
+            {createNavLink('#features', 'Features')}
+            {createNavLink('#about', 'About')}
+            {createNavLink('#contact', 'Contact')}
           </nav>
 
           {/* Header Actions */}

@@ -1,5 +1,3 @@
-// First install: npm install react-icons
-
 // src/pages/Landing/Landing.jsx
 import { Link } from 'react-router-dom';
 import Header from '../../components/Header/Header';
@@ -32,8 +30,8 @@ function Landing() {
       <Header />
       
       <main className="landing-main">
-        {/* Hero Section */}
-        <section className="hero">
+        {/* Hero Section - Added id="home" */}
+        <section id="home" className="hero">
           <div className="container">
             <div className="hero-content">
               <div className="hero-left">
@@ -76,8 +74,8 @@ function Landing() {
         </section>
 
           
-        {/* Features Section */}
-        <section className="features">
+        {/* Features Section - Added id="features" */}
+        <section id="features" className="features">
           <div className="container">
             <div className="section-header">
               <h2>Cutting-Edge Features</h2>
@@ -136,8 +134,8 @@ function Landing() {
           </div>
         </section>
 
-        {/* About Section - Improved Structure */}
-        <section className="about">
+        {/* About Section - Added id="about" */}
+        <section id="about" className="about">
           <div className="container">
             <div className="about-content">
               <div className="about-left">
@@ -201,8 +199,8 @@ function Landing() {
           </div>
         </section>
 
-        {/* Contact Section */}
-        <section className="contact">
+        {/* Contact Section - Added id="contact" */}
+        <section id="contact" className="contact">
           <div className="container">
             <div className="section-header">
               <h2>Get In Touch</h2>
