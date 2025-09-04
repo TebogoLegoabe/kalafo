@@ -56,7 +56,7 @@ function Header() {
     <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
       <div className="container">
         <div className="header-content">
-          {/* Far left KALAFO */}
+          {/* Far left KALAFO - Always redirects to home */}
           <Link
             to="/"
             className="far-left-brand"
@@ -68,7 +68,15 @@ function Header() {
               fontSize: '1.2em',
               letterSpacing: '2px'
             }}
-            onClick={closeMobileMenu}
+            onClick={(e) => {
+              closeMobileMenu();
+              // If we're already on home page, scroll to top
+              if (location.pathname === '/') {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+              // Otherwise, React Router will handle navigation to "/"
+            }}
           >
             <span className="far-left-text">KALAFO</span>
           </Link>

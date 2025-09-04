@@ -264,6 +264,8 @@
   }
 }
 
+/* Update your existing Header.css - replace the nav styles with these: */
+
 /* Navigation */
 .nav {
   display: flex;
@@ -369,11 +371,27 @@ section {
   }
 }
 
+/* KALAFO brand styling */
+.far-left-brand {
+  transition: all 0.3s ease !important;
+  cursor: pointer;
+}
+
+.far-left-brand:hover {
+  color: #2D7D9A !important;
+  transform: scale(1.05);
+}
+
+.far-left-brand:active {
+  transform: scale(0.98);
+}
+
 /* Focus states for accessibility */
 .nav a:focus,
 .nav .nav-link:focus,
 .login-btn:focus,
-.signup-btn:focus {
+.signup-btn:focus,
+.far-left-brand:focus {
   outline: 2px solid #2D7D9A;
   outline-offset: 2px;
 }
