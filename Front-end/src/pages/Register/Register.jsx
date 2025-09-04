@@ -250,9 +250,7 @@ function Register() {
                   </div>
                 </div>
                 
-                <div className="welcome-image">
-                  <div className="floating-icon">🩺</div>
-                </div>
+              
               </div>
             </div>
 
