@@ -1,8 +1,30 @@
-// src/pages/Landing/Landing.js
-import React from 'react';
+// First install: npm install react-icons
+
+// src/pages/Landing/Landing.jsx
+import { Link } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import './Landing.css';
+
+// Import professional icons from react-icons
+import { 
+  HiUserGroup, 
+  HiGlobeAlt, 
+  HiChartBar,
+  HiMail, 
+  HiPhone, 
+  HiLocationMarker, 
+  HiClock 
+} from 'react-icons/hi';
+
+import { 
+  FaStethoscope,
+  FaShieldAlt,
+  FaMobileAlt,
+  FaEye,
+  FaWifi,
+  FaBatteryFull
+} from 'react-icons/fa';
 
 function Landing() {
   return (
@@ -11,63 +33,244 @@ function Landing() {
       
       <main className="landing-main">
         {/* Hero Section */}
-        <section className="hero-section">
-          <div className="hero-content">
-            <h1>Welcome to Kalafo</h1>
-            <p>Your trusted telemedicine platform for remote healthcare consultations</p>
-            <div className="hero-buttons">
-              <a href="/register" className="btn btn-primary">Get Started</a>
-              <a href="/login" className="btn btn-secondary">Login</a>
+        <section className="hero">
+          <div className="container">
+            <div className="hero-content">
+              <div className="hero-left">
+                <h1 className="hero-title">
+                  Revolutionary
+                  <br />
+                  <span className="gradient-text">Digital</span>
+                  <br />
+                  <span className="gradient-text">Stethoscope</span>
+                </h1>
+                
+                <p className="hero-subtitle">
+                  Experience the future of cardiac diagnostics with our advanced digital stethoscope. 
+                  Crystal-clear audio, Meet with your Dr. online and get prescriptions instantly.
+                </p>
+                
+                <div className="hero-actions">
+                  <Link to="/register" className="cta-primary">
+                    Get Started
+                  </Link>
+                  <Link to="/team" className="cta-primary-outline">
+                    Meet Our Team
+                  </Link>
+                </div>
+              </div>
+
+             <div className="hero-illustration">
+              <img 
+                src="/doctor.png" 
+                alt="Female doctor with stethoscope" 
+                className="doctor-illustration"
+                width={750}
+                height={750}
+                style={{ objectFit: 'cover', borderRadius: '25px' }}
+              />
+            </div>
+
             </div>
           </div>
         </section>
 
+          
         {/* Features Section */}
-        <section id="features" className="features-section">
+        <section className="features">
           <div className="container">
-            <h2>Our Features</h2>
+            <div className="section-header">
+              <h2>Cutting-Edge Features</h2>
+              <p>Discover the innovative technology that makes Kalafo the most advanced digital stethoscope for modern healthcare professionals.</p>
+            </div>
+            
             <div className="features-grid">
               <div className="feature-card">
-                <h3>🏥 Remote Consultations</h3>
-                <p>Connect with healthcare professionals from the comfort of your home</p>
+                <div className="feature-icon">
+                  <FaStethoscope />
+                </div>
+                <h3>Advanced Audio Processing</h3>
+                <p>Crystal-clear digital audio with noise cancellation and amplification for precise cardiac assessment.</p>
               </div>
+              
               <div className="feature-card">
-                <h3>📱 Easy to Use</h3>
-                <p>Simple and intuitive interface for patients and doctors</p>
+                <div className="feature-icon">
+                  <FaMobileAlt />
+                </div>
+                <h3>Mobile Integration</h3>
+                <p>Seamlessly connect to iOS and Android devices for real-time monitoring and data sharing.</p>
               </div>
+              
               <div className="feature-card">
-                <h3>🔒 Secure & Private</h3>
-                <p>Your health data is protected with enterprise-grade security</p>
+                <div className="feature-icon">
+                  <FaShieldAlt />
+                </div>
+                <h3>HIPAA Compliant</h3>
+                <p>Enterprise-grade security ensuring patient data privacy and regulatory compliance.</p>
               </div>
+              
               <div className="feature-card">
-                <h3>📊 Health Tracking</h3>
-                <p>Monitor your health metrics and track your progress</p>
+                <div className="feature-icon">
+                  <FaEye />
+                </div>
+                <h3>AI-Powered Analysis</h3>
+                <p>Machine learning algorithms assist in detecting abnormal heart sounds and murmurs.</p>
+              </div>
+              
+              <div className="feature-card">
+                <div className="feature-icon">
+                  <FaWifi />
+                </div>
+                <h3>Wireless Connectivity</h3>
+                <p>Bluetooth and Wi-Fi enabled for effortless data transmission and remote consultations.</p>
+              </div>
+              
+              <div className="feature-card">
+                <div className="feature-icon">
+                  <FaBatteryFull />
+                </div>
+                <h3>Long Battery Life</h3>
+                <p>Up to 24 hours of continuous use with fast charging capabilities.</p>
               </div>
             </div>
           </div>
         </section>
 
         {/* About Section */}
-        <section id="about" className="about-section">
+        <section className="about">
           <div className="container">
-            <h2>About Kalafo</h2>
-            <p>
-              Kalafo is a cutting-edge telemedicine platform that bridges the gap between 
-              patients and healthcare providers. Our mission is to make quality healthcare 
-              accessible to everyone, regardless of location or circumstances.
-            </p>
+            <div className="about-content">
+              <div className="about-left">
+                <h2>About Kalafo</h2>
+                <p>
+                  Kalafo is a pioneering medical technology company dedicated to revolutionizing 
+                  healthcare through innovative digital diagnostic tools. Our mission is to bridge 
+                  the gap between traditional medical practice and cutting-edge technology.
+                </p>
+                <p>
+                  Founded by a team of medical professionals and technology experts, we understand 
+                  the critical importance of accurate, reliable, and accessible healthcare solutions. 
+                  Our digital stethoscope represents years of research and development in partnership 
+                  with leading hospitals and clinics worldwide.
+                </p>
+                <Link to="/about" className="learn-more-btn">Learn Our Story</Link>
+              </div>
+              
+              <div className="about-right">
+                <div className="stats-grid">
+                  <div className="stat-card">
+                    <div className="stat-icon">
+                      <FaStethoscope />
+                    </div>
+                    <div className="stat-number">1+</div>
+                    <div className="stat-label">Years of Innovation</div>
+                  </div>
+                  
+                  <div className="stat-card">
+                    <div className="stat-icon">
+                      <HiUserGroup />
+                    </div>
+                    <div className="stat-number">1K+</div>
+                    <div className="stat-label">Healthcare Professionals</div>
+                  </div>
+                  
+                  <div className="stat-card">
+                    <div className="stat-icon">
+                      <HiGlobeAlt />
+                    </div>
+                    <div className="stat-number">1+</div>
+                    <div className="stat-label">Countries Served</div>
+                  </div>
+                  
+                  <div className="stat-card">
+                    <div className="stat-icon">
+                      <HiChartBar />
+                    </div>
+                    <div className="stat-number">99.8%</div>
+                    <div className="stat-label">Accuracy Rate</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
         {/* Contact Section */}
-        <section id="contact" className="contact-section">
+        <section className="contact">
           <div className="container">
-            <h2>Contact Us</h2>
-            <p>Have questions? We're here to help!</p>
-            <div className="contact-info">
-              <p>📧 Email: support@kalafo.com</p>
-              <p>📞 Phone: +1 (555) 123-4567</p>
-              <p>🌐 Website: www.kalafo.com</p>
+            <div className="section-header">
+              <h2>Get In Touch</h2>
+              <p>Ready to revolutionize your practice with Kalafo? Contact us today to learn more about our digital stethoscope and how it can enhance your patient care.</p>
+            </div>
+            
+            <div className="contact-content">
+              <div className="contact-methods">
+                <div className="contact-method">
+                  <div className="contact-icon">
+                    <HiMail />
+                  </div>
+                  <h3>Email Us</h3>
+                  <p>Get in touch with our team</p>
+                  <a href="mailto:contact@kalafo.com">contact@kalafo.com</a>
+                </div>
+                
+                <div className="contact-method">
+                  <div className="contact-icon">
+                    <HiPhone />
+                  </div>
+                  <h3>Call Us</h3>
+                  <p>Speak with our specialists</p>
+                  <a href="tel:+15551234567">+27 (12) 123-4567</a>
+                </div>
+                
+                <div className="contact-method">
+                  <div className="contact-icon">
+                    <HiLocationMarker />
+                  </div>
+                  <h3>Visit Us</h3>
+                  <p>Our headquarters</p>
+                  <address>1 Jan Smuts Avenue, Johannesburg</address>
+                </div>
+                
+                <div className="contact-method">
+                  <div className="contact-icon">
+                    <HiClock />
+                  </div>
+                  <h3>Business Hours</h3>
+                  <p>We're here to help</p>
+                  <span>Mon-Fri: 8AM-5PM</span>
+                </div>
+              </div>
+              
+              <div className="contact-form">
+                <h3>Send us a message</h3>
+                <p>Fill out the form below and we'll get back to you within 24 hours.</p>
+                
+                <div className="form-grid">
+                  <div className="form-row">
+                    <div className="form-group">
+                      <input type="text" placeholder="First Name" />
+                    </div>
+                    <div className="form-group">
+                      <input type="text" placeholder="Last Name" />
+                    </div>
+                  </div>
+                  
+                  <div className="form-group">
+                    <input type="email" placeholder="Email Address" />
+                  </div>
+                  
+                  <div className="form-group">
+                    <input type="text" placeholder="Company" />
+                  </div>
+                  
+                  <div className="form-group">
+                    <textarea placeholder="Tell us about your needs..." rows="4"></textarea>
+                  </div>
+                  
+                  <button className="send-message-btn">Send Message</button>
+                </div>
+              </div>
             </div>
           </div>
         </section>
