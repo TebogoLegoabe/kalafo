@@ -8,11 +8,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin: 0 auto 2rem; /* auto horizontally centers in the card */
   box-shadow: 0 10px 15px -3px rgba(56, 178, 172, 0.2);
   transition: all 0.3s ease;
   position: relative;
   z-index: 1;
+  font-size: 2rem; /* scales icon size */
+  color: white;    /* makes icons visible against gradient */
 }
 
 .feature-icon svg {
@@ -20,6 +22,21 @@
   height: 2rem;
   fill: white;
 }
+
+.stat-icon svg {
+  color: #0da9e7;   /* brand color */
+  background: #e6f7fc;
+  border-radius: 15px;
+  padding: 5px;
+}
+
+.stat-number {
+  font-size: 2rem;      
+  font-weight: 700;    
+  color: #222;         
+  line-height: 1.2;
+}
+
 
 html {
   scroll-behavior: smooth;
@@ -730,5 +747,237 @@ html {
   
   .device-showcase {
     display: none;
+  }
+}
+
+/* About Section - Improved Layout */
+.about {
+  padding: 6rem 0;
+  background: #f8f9fa;
+}
+
+.about-content {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 5rem;
+  align-items: start;
+}
+
+.about-left {
+  max-width: 600px;
+}
+
+.about-left h2 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #2D7D9A;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.about-left p {
+  color: #666;
+  margin-bottom: 2rem;
+  line-height: 1.7;
+  font-size: 1.1rem;
+  font-weight: 300;
+}
+
+.about-left p:last-of-type {
+  margin-bottom: 2.5rem;
+}
+
+.learn-more-btn {
+  background: #2D7D9A;
+  color: white;
+  text-decoration: none;
+  padding: 0.875rem 2.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  display: inline-block;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  box-shadow: 0 2px 4px rgba(45, 125, 154, 0.2);
+}
+
+.learn-more-btn:hover {
+  background: #246a82;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(45, 125, 154, 0.3);
+}
+
+/* Stats Grid - Improved */
+.about-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.stat-card {
+  background: white;
+  padding: 2rem 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(45, 125, 154, 0.03), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 15px -3px rgba(0, 0, 0, 0.15);
+  border-color: rgba(45, 125, 154, 0.2);
+}
+
+.stat-card:hover::before {
+  opacity: 1;
+}
+
+.stat-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  background: linear-gradient(135deg, #e6f7fc, #b8e6f0);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.stat-icon svg {
+  width: 1.75rem;
+  height: 1.75rem;
+  color: #2D7D9A;
+}
+
+.stat-card:hover .stat-icon {
+  transform: scale(1.1);
+  background: linear-gradient(135deg, #2D7D9A, #4A9BB8);
+}
+
+.stat-card:hover .stat-icon svg {
+  color: white;
+}
+
+.stat-number {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #2D7D9A;
+  display: block;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 500;
+  line-height: 1.3;
+  position: relative;
+  z-index: 1;
+}
+
+/* Responsive Design for About Section */
+@media (max-width: 1024px) {
+  .about-content {
+    grid-template-columns: 1fr;
+    gap: 4rem;
+    text-align: center;
+  }
+
+  .about-left {
+    max-width: none;
+  }
+
+  .stats-grid {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .about {
+    padding: 4rem 0;
+  }
+
+  .about-left h2 {
+    font-size: 2rem;
+  }
+
+  .about-left p {
+    font-size: 1rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    max-width: 300px;
+    gap: 1.5rem;
+  }
+
+  .stat-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-content {
+    gap: 3rem;
+  }
+
+  .about-left h2 {
+    font-size: 1.75rem;
+  }
+
+  .learn-more-btn {
+    padding: 0.75rem 2rem;
+    font-size: 0.9rem;
+  }
+
+  .stat-icon {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .stat-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .stat-number {
+    font-size: 1.75rem;
+  }
+  .stat-label {
+    font-size: 0.85rem;
   }
 }

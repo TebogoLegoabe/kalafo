@@ -54,7 +54,7 @@ function Landing() {
                   <Link to="/register" className="cta-primary">
                     Get Started
                   </Link>
-                  <Link to="/team" className="cta-primary-outline">
+                   <Link to="/register" className="cta-primary">
                     Meet Our Team
                   </Link>
                 </div>
@@ -136,28 +136,34 @@ function Landing() {
           </div>
         </section>
 
-        {/* About Section */}
+        {/* About Section - Improved Structure */}
         <section className="about">
           <div className="container">
             <div className="about-content">
               <div className="about-left">
                 <h2>About Kalafo</h2>
                 <p>
-                  Kalafo is a pioneering medical technology company dedicated to revolutionizing 
-                  healthcare through innovative digital diagnostic tools. Our mission is to bridge 
-                  the gap between traditional medical practice and cutting-edge technology.
+                  We are a health-tech company developing end-to-end solutions for accessible healthcare. 
+                  Our flagship innovation is a digital stethoscope, integrated with a telehealth platform that enables real-time, one-on-one doctor consultations. 
+                  By combining medical-grade diagnostic tools with seamless virtual care, we aim to bring healthcare directly to the patient—anytime, anywhere.
                 </p>
+
+                <h2>Our Mission</h2>
                 <p>
-                  Founded by a team of medical professionals and technology experts, we understand 
-                  the critical importance of accurate, reliable, and accessible healthcare solutions. 
-                  Our digital stethoscope represents years of research and development in partnership 
-                  with leading hospitals and clinics worldwide.
+                  At Kalafo, our mission is to improve access to healthcare. We believe that everyone deserves quality medical care, regardless of their location or circumstances.
                 </p>
-                <Link to="/about" className="learn-more-btn">Learn Our Story</Link>
+
+                <h2>Our Vision</h2>
+                <p>
+                  To be the most patient-centric company in the world. We envision a future where healthcare is accessible, affordable, and personalized for everyone.
+                </p>
               </div>
-              
+
               <div className="about-right">
                 <div className="stats-grid">
+                  <Link to="/about" className="learn-more-btn">
+                  Learn Our Story
+                </Link>
                   <div className="stat-card">
                     <div className="stat-icon">
                       <FaStethoscope />
@@ -165,7 +171,7 @@ function Landing() {
                     <div className="stat-number">1+</div>
                     <div className="stat-label">Years of Innovation</div>
                   </div>
-                  
+
                   <div className="stat-card">
                     <div className="stat-icon">
                       <HiUserGroup />
@@ -173,7 +179,7 @@ function Landing() {
                     <div className="stat-number">1K+</div>
                     <div className="stat-label">Healthcare Professionals</div>
                   </div>
-                  
+
                   <div className="stat-card">
                     <div className="stat-icon">
                       <HiGlobeAlt />
@@ -181,7 +187,7 @@ function Landing() {
                     <div className="stat-number">1+</div>
                     <div className="stat-label">Countries Served</div>
                   </div>
-                  
+
                   <div className="stat-card">
                     <div className="stat-icon">
                       <HiChartBar />
