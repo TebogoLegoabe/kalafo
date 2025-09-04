@@ -6,7 +6,7 @@ import Footer from '../../components/Footer/Footer';
 import './Register.css';
 
 // Import icons for visual enhancement
-import { FaUserMd, FaUser, FaEnvelope, FaLock, FaCheckCircle } from 'react-icons/fa';
+import { FaUserMd, FaUser, FaEnvelope, FaLock, FaCheckCircle, FaEye, FaEyeSlash } from 'react-icons/fa';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -20,9 +20,78 @@ function Register() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState({
+    score: 0,
+    feedback: [],
+    isValid: false
+  });
   
   const navigate = useNavigate();
   const { register } = useAuth();
+
+  // Password strength checker
+  const checkPasswordStrength = (password) => {
+    const feedback = [];
+    let score = 0;
+
+    // Length check
+    if (password.length >= 8) {
+      score += 1;
+    } else {
+      feedback.push('At least 8 characters');
+    }
+
+    // Uppercase check
+    if (/[A-Z]/.test(password)) {
+      score += 1;
+    } else {
+      feedback.push('One uppercase letter');
+    }
+
+    // Lowercase check
+    if (/[a-z]/.test(password)) {
+      score += 1;
+    } else {
+      feedback.push('One lowercase letter');
+    }
+
+    // Number check
+    if (/\d/.test(password)) {
+      score += 1;
+    } else {
+      feedback.push('One number');
+    }
+
+    // Special character check
+    if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+      score += 1;
+    } else {
+      feedback.push('One special character');
+    }
+
+    setPasswordStrength({
+      score,
+      feedback,
+      isValid: score >= 3 && password.length >= 6
+    });
+  };
+
+  const getPasswordStrengthLabel = (score) => {
+    if (score === 0) return '';
+    if (score <= 2) return 'Weak';
+    if (score <= 3) return 'Fair';
+    if (score <= 4) return 'Good';
+    return 'Strong';
+  };
+
+  const getPasswordStrengthColor = (score) => {
+    if (score <= 2) return '#ef4444';
+    if (score <= 3) return '#f59e0b';
+    if (score <= 4) return '#10b981';
+    return '#059669';
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,6 +99,12 @@ function Register() {
       ...prev,
       [name]: value
     }));
+    
+    // Check password strength when password changes
+    if (name === 'password') {
+      checkPasswordStrength(value);
+    }
+    
     // Clear error when user starts typing
     if (error) setError('');
   };
@@ -60,9 +135,14 @@ function Register() {
       return false;
     }
     
-    // Password validation
+    // Password validation - Enhanced
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters long');
+      return false;
+    }
+    
+    if (!passwordStrength.isValid) {
+      setError('Please create a stronger password following the guidelines');
       return false;
     }
     
@@ -304,19 +384,54 @@ function Register() {
                       <FaLock className="input-icon" />
                       Password
                     </label>
-                    <input
-                      type="password"
-                      id="password"
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      placeholder="Create a secure password"
-                      disabled={loading}
-                      required
-                    />
-                    <small className="form-help">
-                      Password must be at least 6 characters long
-                    </small>
+                    <div className="password-input-wrapper">
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        id="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="Create a secure password"
+                        disabled={loading}
+                        required
+                      />
+                      <button
+                        type="button"
+                        className="password-toggle"
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                      >
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
+                    </div>
+                    
+                    {/* Password Strength Indicator */}
+                    {formData.password && (
+                      <div className="password-strength">
+                        <div className="strength-meter">
+                          <div 
+                            className="strength-fill"
+                            style={{
+                              width: `${(passwordStrength.score / 5) * 100}%`,
+                              backgroundColor: getPasswordStrengthColor(passwordStrength.score)
+                            }}
+                          ></div>
+                        </div>
+                        <div className="strength-info">
+                          <span 
+                            className="strength-label"
+                            style={{ color: getPasswordStrengthColor(passwordStrength.score) }}
+                          >
+                            {getPasswordStrengthLabel(passwordStrength.score)}
+                          </span>
+                          {passwordStrength.feedback.length > 0 && (
+                            <div className="strength-feedback">
+                              <small>Missing: {passwordStrength.feedback.join(', ')}</small>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                   
                   <div className="form-group">
@@ -324,16 +439,29 @@ function Register() {
                       <FaLock className="input-icon" />
                       Confirm Password
                     </label>
-                    <input
-                      type="password"
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                      placeholder="Confirm your password"
-                      disabled={loading}
-                      required
-                    />
+                    <div className="password-input-wrapper">
+                      <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        placeholder="Confirm your password"
+                        disabled={loading}
+                        required
+                      />
+                      <button
+                        type="button"
+                        className="password-toggle"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                      >
+                        {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
+                    </div>
+                    {formData.confirmPassword && formData.password !== formData.confirmPassword && (
+                      <small className="form-error">Passwords do not match</small>
+                    )}
                   </div>
                   
                   {/* Submit Button */}
