@@ -9,7 +9,6 @@ function Footer() {
         <div className="footer-content">
           <div className="footer-brand">
             <div className="footer-logo">
-              <div className="logo-icon">K</div>
               <span className="brand-name">Kalafo</span>
             </div>
             <p className="footer-description">
