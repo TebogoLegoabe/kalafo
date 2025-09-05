@@ -161,9 +161,6 @@ function Landing() {
                     </div>
                     <div className="stat-number">10+</div>
                     <div className="stat-label">Healthcare Professionals</div>
-                  
-                  
-                    
                   </div>
                 </div>
               </div>
