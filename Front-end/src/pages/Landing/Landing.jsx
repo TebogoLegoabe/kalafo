@@ -9,6 +9,7 @@ import {
   HiUserGroup, 
   HiGlobeAlt, 
   HiChartBar,
+  HiUsers,
   HiMail, 
   HiPhone, 
   HiLocationMarker, 
@@ -140,10 +141,26 @@ function Landing() {
                 </Link>
                   <div className="stat-card">
                     <div className="stat-icon">
+                      <HiUsers />
+                    </div>
+                    <div className="stat-number">6</div>
+                    <div className="stat-label">Team Members</div>
+                  </div>
+
+                    <div className="stat-card">
+                    <div className="stat-icon">
+                      <HiUsers />
+                    </div>
+                    <div className="stat-number">100+</div>
+                    <div className="stat-label">Patients</div>
+                  </div>
+
+                    <div className="stat-card">
+                    <div className="stat-icon">
                       <FaStethoscope />
                     </div>
                     <div className="stat-number">1</div>
-                    <div className="stat-label">Years of Innovation</div>
+                    <div className="stat-label">Year of Innovation</div>
                   </div>
 
                   <div className="stat-card">
@@ -152,6 +169,9 @@ function Landing() {
                     </div>
                     <div className="stat-number">10+</div>
                     <div className="stat-label">Healthcare Professionals</div>
+                  
+                  
+                    
                   </div>
                 </div>
               </div>
