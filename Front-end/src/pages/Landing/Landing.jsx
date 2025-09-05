@@ -150,24 +150,8 @@ function Landing() {
                     <div className="stat-icon">
                       <HiUserGroup />
                     </div>
-                    <div className="stat-number">5+</div>
+                    <div className="stat-number">10+</div>
                     <div className="stat-label">Healthcare Professionals</div>
-                  </div>
-
-                  <div className="stat-card">
-                    <div className="stat-icon">
-                      <HiGlobeAlt />
-                    </div>
-                    <div className="stat-number">1</div>
-                    <div className="stat-label">Countries Served</div>
-                  </div>
-
-                  <div className="stat-card">
-                    <div className="stat-icon">
-                      <HiChartBar />
-                    </div>
-                    <div className="stat-number">99.8%</div>
-                    <div className="stat-label">Accuracy Rate</div>
                   </div>
                 </div>
               </div>

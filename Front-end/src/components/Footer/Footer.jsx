@@ -1,6 +1,7 @@
 // src/components/Footer/Footer.jsx
 import React from 'react';
 import './Footer.css';
+import { HiMail, HiPhone, HiLocationMarker } from 'react-icons/hi';
 
 function Footer() {
   return (
@@ -15,7 +16,7 @@ function Footer() {
               Revolutionizing healthcare through innovative digital diagnostic technology.
             </p>
           </div>
-          
+
           <div className="footer-section">
             <h4>Product</h4>
             <a href="#digital-stethoscope">Digital Stethoscope</a>
@@ -23,7 +24,7 @@ function Footer() {
             <a href="#specifications">Specifications</a>
             <a href="#pricing">Pricing</a>
           </div>
-          
+
           <div className="footer-section">
             <h4>Support</h4>
             <a href="#documentation">Documentation</a>
@@ -31,20 +32,29 @@ function Footer() {
             <a href="#faq">FAQ</a>
             <a href="#contact">Contact</a>
           </div>
-          
+
           <div className="footer-section">
             <h4>Contact</h4>
             <div className="contact-info">
-              <a href="mailto:contact@kalafo.com">📧 contact@kalafo.com</a>
-              <a href="tel:+15551234567">📞 +27 (12) 123-4567</a>
-              <span>📍 1 Jan Smuts Avenue, Johannesburg</span>
+              <div className="contact-item">
+                <HiMail className="contact-icon" />
+                <a href="mailto:contact@kalafo.com">contact@kalafo.com</a>
+              </div>
+              <div className="contact-item">
+                <HiPhone className="contact-icon" />
+                <a href="tel:+27121234567">+27 (12) 123-4567</a>
+              </div>
+              <div className="contact-item">
+                <HiLocationMarker className="contact-icon" />
+                <span>1 Jan Smuts Avenue, Johannesburg</span>
+              </div>
             </div>
           </div>
+
         </div>
-        
+
         <div className="footer-bottom">
           <div className="footer-bottom-content">
-            <p>Made with ❤️ for healthcare professionals worldwide</p>
             <p>&copy; 2025 Kalafo. All rights reserved.</p>
           </div>
         </div>
