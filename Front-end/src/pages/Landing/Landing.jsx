@@ -139,14 +139,6 @@ function Landing() {
                   <Link to="/about" className="learn-more-btn">
                   Learn Our Story
                 </Link>
-                  <div className="stat-card">
-                    <div className="stat-icon">
-                      <HiUsers />
-                    </div>
-                    <div className="stat-number">6</div>
-                    <div className="stat-label">Team Members</div>
-                  </div>
-
                     <div className="stat-card">
                     <div className="stat-icon">
                       <HiUsers />
