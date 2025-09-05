@@ -263,3 +263,135 @@
     box-shadow: none;
   }
 }
+
+/* Update your existing Header.css - replace the nav styles with these: */
+
+/* Navigation */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav a,
+.nav .nav-link {
+  color: #666;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  transition: color 0.3s ease;
+  padding: 0.5rem 0;
+}
+
+.nav a:hover,
+.nav .nav-link:hover {
+  color: #2D7D9A;
+}
+
+/* Ensure smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Add offset for fixed header when scrolling to sections */
+section {
+  scroll-margin-top: 80px; /* Adjust this value to match your header height */
+}
+
+/* Mobile responsive navigation */
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background: white;
+    flex-direction: column;
+    gap: 0;
+    padding: 2rem 0;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-100vh);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 99;
+  }
+
+  .nav.nav-open {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .nav a,
+  .nav .nav-link {
+    padding: 1rem 2rem;
+    width: 100%;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 1.1rem;
+  }
+
+  .nav a:last-child,
+  .nav .nav-link:last-child {
+    border-bottom: none;
+  }
+
+  .login-btn {
+    display: none;
+  }
+
+  .signup-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 16px;
+  }
+
+  .header-content {
+    padding: 0.75rem 0;
+  }
+
+  .far-left-brand {
+    font-size: 1rem !important;
+    letter-spacing: 1px !important;
+  }
+
+  .signup-btn {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8125rem;
+  }
+}
+
+/* KALAFO brand styling */
+.far-left-brand {
+  transition: all 0.3s ease !important;
+  cursor: pointer;
+}
+
+.far-left-brand:hover {
+  color: #2D7D9A !important;
+  transform: scale(1.05);
+}
+
+.far-left-brand:active {
+  transform: scale(0.98);
+}
+
+/* Focus states for accessibility */
+.nav a:focus,
+.nav .nav-link:focus,
+.login-btn:focus,
+.signup-btn:focus,
+.far-left-brand:focus {
+  outline: 2px solid #2D7D9A;
+  outline-offset: 2px;
+}

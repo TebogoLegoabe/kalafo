@@ -1,5 +1,3 @@
-// First install: npm install react-icons
-
 // src/pages/Landing/Landing.jsx
 import { Link } from 'react-router-dom';
 import Header from '../../components/Header/Header';
@@ -11,6 +9,7 @@ import {
   HiUserGroup, 
   HiGlobeAlt, 
   HiChartBar,
+  HiUsers,
   HiMail, 
   HiPhone, 
   HiLocationMarker, 
@@ -32,8 +31,8 @@ function Landing() {
       <Header />
       
       <main className="landing-main">
-        {/* Hero Section */}
-        <section className="hero">
+        {/* Hero Section - Added id="home" */}
+        <section id="home" className="hero">
           <div className="container">
             <div className="hero-content">
               <div className="hero-left">
@@ -76,8 +75,8 @@ function Landing() {
         </section>
 
           
-        {/* Features Section */}
-        <section className="features">
+        {/* Features Section - Added id="features" */}
+        <section id="features" className="features">
           <div className="container">
             <div className="section-header">
               <h2>Cutting-Edge Features</h2>
@@ -103,41 +102,17 @@ function Landing() {
               
               <div className="feature-card">
                 <div className="feature-icon">
-                  <FaShieldAlt />
-                </div>
-                <h3>HIPAA Compliant</h3>
-                <p>Enterprise-grade security ensuring patient data privacy and regulatory compliance.</p>
-              </div>
-              
-              <div className="feature-card">
-                <div className="feature-icon">
-                  <FaEye />
-                </div>
-                <h3>AI-Powered Analysis</h3>
-                <p>Machine learning algorithms assist in detecting abnormal heart sounds and murmurs.</p>
-              </div>
-              
-              <div className="feature-card">
-                <div className="feature-icon">
                   <FaWifi />
                 </div>
                 <h3>Wireless Connectivity</h3>
                 <p>Bluetooth and Wi-Fi enabled for effortless data transmission and remote consultations.</p>
               </div>
-              
-              <div className="feature-card">
-                <div className="feature-icon">
-                  <FaBatteryFull />
-                </div>
-                <h3>Long Battery Life</h3>
-                <p>Up to 24 hours of continuous use with fast charging capabilities.</p>
-              </div>
             </div>
           </div>
         </section>
 
-        {/* About Section - Improved Structure */}
-        <section className="about">
+        {/* About Section - Added id="about" */}
+        <section id="about" className="about">
           <div className="container">
             <div className="about-content">
               <div className="about-left">
@@ -164,36 +139,28 @@ function Landing() {
                   <Link to="/about" className="learn-more-btn">
                   Learn Our Story
                 </Link>
-                  <div className="stat-card">
+                    <div className="stat-card">
+                    <div className="stat-icon">
+                      <HiUsers />
+                    </div>
+                    <div className="stat-number">100+</div>
+                    <div className="stat-label">Patients</div>
+                  </div>
+
+                    <div className="stat-card">
                     <div className="stat-icon">
                       <FaStethoscope />
                     </div>
-                    <div className="stat-number">1+</div>
-                    <div className="stat-label">Years of Innovation</div>
+                    <div className="stat-number">1</div>
+                    <div className="stat-label">Year of Innovation</div>
                   </div>
 
                   <div className="stat-card">
                     <div className="stat-icon">
                       <HiUserGroup />
                     </div>
-                    <div className="stat-number">1K+</div>
+                    <div className="stat-number">10+</div>
                     <div className="stat-label">Healthcare Professionals</div>
-                  </div>
-
-                  <div className="stat-card">
-                    <div className="stat-icon">
-                      <HiGlobeAlt />
-                    </div>
-                    <div className="stat-number">1+</div>
-                    <div className="stat-label">Countries Served</div>
-                  </div>
-
-                  <div className="stat-card">
-                    <div className="stat-icon">
-                      <HiChartBar />
-                    </div>
-                    <div className="stat-number">99.8%</div>
-                    <div className="stat-label">Accuracy Rate</div>
                   </div>
                 </div>
               </div>
@@ -201,8 +168,8 @@ function Landing() {
           </div>
         </section>
 
-        {/* Contact Section */}
-        <section className="contact">
+        {/* Contact Section - Added id="contact" */}
+        <section id="contact" className="contact">
           <div className="container">
             <div className="section-header">
               <h2>Get In Touch</h2>
