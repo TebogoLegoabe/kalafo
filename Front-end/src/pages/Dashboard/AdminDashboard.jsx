@@ -1,925 +1,657 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import './Dashboard.css';
+import React, { useState } from 'react';
+import {
+  Calendar, Video, FileText, User, Clock, Heart,
+  Phone, PhoneOff, Mic, MicOff, VideoOff,
+  Bell, Settings, Search, Plus, MapPin, Star,
+  Download, Eye, ChevronRight, Activity,
+  Maximize2, Minimize2, MessageSquare, Edit,
+  Save, X, Users, Stethoscope, BarChart3,
+  PlusCircle, Upload, Filter, ChevronDown,
+  Shield, UserPlus, UserX, AlertTriangle,
+  TrendingUp, TrendingDown, DollarSign,
+  CheckCircle, XCircle, Clock3, Award,
+  Monitor, Database, Trash2, Lock, Unlock
+} from 'lucide-react';
 
-function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState('overview');
-  const [dashboardData, setDashboardData] = useState(null);
-  const [usersData, setUsersData] = useState(null);
-  const [consultationsData, setConsultationsData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [usersLoading, setUsersLoading] = useState(false);
-  const [consultationsLoading, setConsultationsLoading] = useState(false);
-  const [error, setError] = useState('');
+const field = (label, el) => (
+  <label style={{ display: 'grid', gap: 6 }}>
+    <span style={{ fontSize: 12, color: '#6b7280' }}>{label}</span>
+    {el}
+  </label>
+);
+
+const inputStyle = {
+  padding: '0.5rem 0.75rem',
+  border: '1px solid #d1d5db',
+  borderRadius: '0.375rem',
+  fontSize: '0.875rem',
+  width: '100%'
+};
+
+const card = {
+  background: 'white',
+  borderRadius: '0.75rem',
+  boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+  padding: '1.5rem'
+};
+
+const AdminDashboard = () => {
+  // Dashboard states
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [selectedTimeRange, setSelectedTimeRange] = useState('7days');
+
+  // Management states
   const [searchTerm, setSearchTerm] = useState('');
-  const [userFilter, setUserFilter] = useState('all'); // all, doctors, patients
-  const [sortBy, setSortBy] = useState('name');
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [selectedFilter, setSelectedFilter] = useState('all');
+  const [showUserModal, setShowUserModal] = useState(false);
+  const [modalType, setModalType] = useState(''); // 'doctor' or 'patient'
 
-  const { logout, user, apiCall } = useAuth();
-  const navigate = useNavigate();
+  // Form states
+  const [newUserData, setNewUserData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    specialty: '',
+    experience: '',
+    license: '',
+    address: '',
+    dateOfBirth: '',
+    emergencyContact: ''
+  });
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        console.log('🔍 Loading admin dashboard overview data...');
-        
-        // Try the actual admin dashboard endpoint first
-        try {
-          const adminResponse = await apiCall('/dashboard/admin');
-          if (adminResponse.ok) {
-            const adminData = await adminResponse.json();
-            console.log('✅ Admin dashboard API response:', adminData);
-            
-            // Your backend returns data nested under 'stats'
-            if (adminData.stats) {
-              const overviewStats = {
-                total_users: (adminData.stats.total_doctors || 0) + (adminData.stats.total_patients || 0) + 1, // +1 for admin
-                total_doctors: adminData.stats.total_doctors || 0,
-                total_patients: adminData.stats.total_patients || 0,
-                total_consultations: adminData.stats.total_consultations || 0,
-                active_consultations: adminData.stats.active_consultations || 0,
-                recent_registrations: [], // You could add this to your backend
-                system_health: { status: 'healthy', uptime: '99.9%' }
-              };
-              
-              console.log('📊 Using real admin stats:', overviewStats);
-              setDashboardData(overviewStats);
-              setLoading(false);
-              return; // Exit early - we got real data!
-            }
-          }
-        } catch (adminError) {
-          console.log('⚠️ Admin dashboard endpoint failed:', adminError);
-        }
-        
-        // Fallback: try to get users data directly
-        try {
-          const usersResponse = await apiCall('/users');
-          if (usersResponse.ok) {
-            const usersData = await usersResponse.json();
-            console.log('✅ Users API response:', usersData);
-            
-            if (usersData.users) {
-              const doctors = usersData.users.filter(u => u.role === 'doctor');
-              const patients = usersData.users.filter(u => u.role === 'patient');
-              const admins = usersData.users.filter(u => u.role === 'admin');
-              
-              const overviewStats = {
-                total_users: usersData.users.length,
-                total_doctors: doctors.length,
-                total_patients: patients.length,
-                total_consultations: 3, // Mock until we add consultations endpoint
-                active_consultations: 0,
-                recent_registrations: usersData.users.filter(u => {
-                  const createdDate = new Date(u.created_at);
-                  const weekAgo = new Date();
-                  weekAgo.setDate(weekAgo.getDate() - 7);
-                  return createdDate > weekAgo;
-                }).slice(0, 5),
-                system_health: { status: 'healthy', uptime: '99.9%' }
-              };
-              
-              console.log(`📊 Real counts from /users - Doctors: ${doctors.length}, Patients: ${patients.length}, Admins: ${admins.length}`);
-              setDashboardData(overviewStats);
-              setLoading(false);
-              return;
-            }
-          }
-        } catch (usersError) {
-          console.log('⚠️ Users endpoint failed:', usersError);
-        }
-        
-        // Last resort fallback
-        console.log('🆘 Using fallback data');
-        const fallbackStats = {
-          total_users: 4,
-          total_doctors: 1,
-          total_patients: 2,
-          total_consultations: 3,
-          active_consultations: 0,
-          recent_registrations: [],
-          system_health: { status: 'healthy', uptime: '99.9%' }
-        };
-        
-        setDashboardData(fallbackStats);
-        setError('Could not connect to backend APIs - using demo data');
-        
-      } catch (err) {
-        console.error('💥 Admin dashboard fetch error:', err);
-        setError('Backend connection failed');
-      } finally {
-        setLoading(false);
-      }
-    };
+  // System Overview
+  const [systemStats] = useState({
+    totalUsers: 1542,
+    totalDoctors: 89,
+    totalPatients: 1453,
+    activeConsultations: 12,
+    todayAppointments: 156,
+    completedToday: 89,
+    revenue: 24580,
+    avgRating: 4.8
+  });
 
-    fetchDashboardData();
-  }, [apiCall]);
+  // Recent Activities
+  const [recentActivities] = useState([
+    { id: 1, type: 'appointment', message: 'Dr. Sarah Wilson completed consultation with John Miller', timestamp: '2 minutes ago', status: 'success' },
+    { id: 2, type: 'registration', message: 'New patient registered: Emily Davis', timestamp: '15 minutes ago', status: 'info' },
+    { id: 3, type: 'alert', message: 'System maintenance scheduled for tonight', timestamp: '1 hour ago', status: 'warning' },
+    { id: 4, type: 'payment', message: 'Payment received from patient P003', timestamp: '2 hours ago', status: 'success' }
+  ]);
 
-  useEffect(() => {
-    if (activeTab === 'users' && !usersData) {
-      const fetchUsers = async () => {
-        setUsersLoading(true);
-        try {
-          console.log('🔍 Admin: Fetching patients from /patients endpoint...');
-          
-          // Try to get patients first (this endpoint works from doctor dashboard)
-          const patientsResponse = await apiCall('/patients');
-          console.log('📡 Patients API response status:', patientsResponse.status);
-          
-          const patientsData = await patientsResponse.json();
-          console.log('📊 Patients data received:', patientsData);
-          
-          // Create mock users data structure that includes patients
-          if (patientsResponse.ok && patientsData.patients) {
-            console.log('✅ Successfully loaded', patientsData.patients.length, 'patients');
-            
-            // Add current user (admin) and mock doctors to patients list
-            const mockUsers = [
-              // Current admin user
-              {
-                id: user?.id || 1,
-                first_name: user?.first_name || 'Admin',
-                last_name: user?.last_name || 'User',
-                email: user?.email || 'admin@kalafo.com',
-                role: 'admin',
-                is_active: true,
-                created_at: user?.created_at || new Date().toISOString()
-              },
-              // Mock doctors
-              {
-                id: 'doc1',
-                first_name: 'Sarah',
-                last_name: 'Johnson',
-                email: 'dr.johnson@kalafo.com',
-                role: 'doctor',
-                is_active: true,
-                created_at: new Date('2024-01-15').toISOString()
-              },
-              {
-                id: 'doc2',
-                first_name: 'Michael',
-                last_name: 'Chen',
-                email: 'dr.chen@kalafo.com',
-                role: 'doctor',
-                is_active: true,
-                created_at: new Date('2024-02-10').toISOString()
-              },
-              // Convert patients to user format
-              ...patientsData.patients.map(patient => ({
-                ...patient,
-                role: 'patient',
-                is_active: true,
-                created_at: patient.created_at || new Date().toISOString()
-              }))
-            ];
-            
-            console.log('👥 Total users created:', mockUsers.length);
-            console.log('🏥 Patients:', mockUsers.filter(u => u.role === 'patient').length);
-            console.log('👨‍⚕️ Doctors:', mockUsers.filter(u => u.role === 'doctor').length);
-            
-            setUsersData({
-              users: mockUsers,
-              total_count: mockUsers.length
-            });
-          } else {
-            console.log('❌ Patients API failed or no patients found');
-            console.log('Response ok:', patientsResponse.ok);
-            console.log('Patients array:', patientsData.patients);
-            
-            // Fallback mock data if patients endpoint fails
-            const mockUsers = [
-              {
-                id: user?.id || 1,
-                first_name: user?.first_name || 'Admin',
-                last_name: user?.last_name || 'User',
-                email: user?.email || 'admin@kalafo.com',
-                role: 'admin',
-                is_active: true,
-                created_at: new Date().toISOString()
-              },
-              {
-                id: 'doc1',
-                first_name: 'Sarah',
-                last_name: 'Johnson',
-                email: 'dr.johnson@kalafo.com',
-                role: 'doctor',
-                is_active: true,
-                created_at: new Date('2024-01-15').toISOString()
-              },
-              {
-                id: 'pat1',
-                first_name: 'John',
-                last_name: 'Doe',
-                email: 'john.doe@email.com',
-                role: 'patient',
-                is_active: true,
-                created_at: new Date('2024-03-01').toISOString()
-              },
-              {
-                id: 'pat2',
-                first_name: 'Jane',
-                last_name: 'Smith',
-                email: 'jane.smith@email.com',
-                role: 'patient',
-                is_active: true,
-                created_at: new Date('2024-03-05').toISOString()
-              }
-            ];
-            
-            console.log('🔄 Using fallback mock data with', mockUsers.length, 'users');
-            
-            setUsersData({
-              users: mockUsers,
-              total_count: mockUsers.length
-            });
-          }
-        } catch (err) {
-          console.error('💥 Error fetching users:', err);
-          // Fallback to basic mock data
-          const mockUsers = [
-            {
-              id: user?.id || 1,
-              first_name: user?.first_name || 'Admin',
-              last_name: user?.last_name || 'User',
-              email: user?.email || 'admin@kalafo.com',
-              role: 'admin',
-              is_active: true,
-              created_at: new Date().toISOString()
-            },
-            {
-              id: 'pat1',
-              first_name: 'Demo',
-              last_name: 'Patient',
-              email: 'demo.patient@email.com',
-              role: 'patient',
-              is_active: true,
-              created_at: new Date('2024-03-01').toISOString()
-            }
-          ];
-          
-          console.log('🆘 Using emergency fallback data');
-          
-          setUsersData({
-            users: mockUsers,
-            total_count: mockUsers.length
-          });
-        } finally {
-          setUsersLoading(false);
-        }
+  // Doctors
+  const [doctorsData, setDoctorsData] = useState([
+    { id: 'D001', name: 'Dr. Sarah Wilson', email: 'sarah.wilson@telemed.com', phone: '+1 555-0101', specialty: 'Cardiologist', experience: '15 years', license: 'MD123456', status: 'active', rating: 4.9, consultationsToday: 8, totalConsultations: 1247, joinDate: '2023-01-15', lastActive: '5 minutes ago', revenue: 15420 },
+    { id: 'D002', name: 'Dr. Michael Chen', email: 'michael.chen@telemed.com', phone: '+1 555-0102', specialty: 'General Practitioner', experience: '12 years', license: 'MD123457', status: 'active', rating: 4.8, consultationsToday: 6, totalConsultations: 892, joinDate: '2023-02-20', lastActive: '12 minutes ago', revenue: 12680 },
+    { id: 'D003', name: 'Dr. Emily Johnson', email: 'emily.johnson@telemed.com', phone: '+1 555-0103', specialty: 'Dermatologist', experience: '10 years', license: 'MD123458', status: 'inactive', rating: 4.7, consultationsToday: 0, totalConsultations: 654, joinDate: '2023-03-10', lastActive: '2 days ago', revenue: 8930 }
+  ]);
+
+  // Patients
+  const [patientsData, setPatientsData] = useState([
+    { id: 'P001', name: 'John Miller', email: 'john.miller@email.com', phone: '+1 555-0201', age: 45, dateOfBirth: '1978-08-15', address: '123 Main St, City, State', emergencyContact: '+1 555-0301', status: 'active', joinDate: '2023-06-10', lastConsultation: '2024-01-10', totalConsultations: 12, totalSpent: 1420, currentDoctor: 'Dr. Sarah Wilson', medicalConditions: ['Hypertension', 'Diabetes Type 2'] },
+    { id: 'P002', name: 'Sarah Johnson', email: 'sarah.johnson@email.com', phone: '+1 555-0202', age: 32, dateOfBirth: '1991-03-22', address: '456 Oak Ave, City, State', emergencyContact: '+1 555-0302', status: 'active', joinDate: '2023-08-05', lastConsultation: '2024-01-12', totalConsultations: 8, totalSpent: 920, currentDoctor: 'Dr. Michael Chen', medicalConditions: ['Allergies'] },
+    { id: 'P003', name: 'Michael Chen', email: 'michael.chen@email.com', phone: '+1 555-0203', age: 28, dateOfBirth: '1995-11-08', address: '789 Pine St, City, State', emergencyContact: '+1 555-0303', status: 'new', joinDate: '2024-01-14', lastConsultation: 'Never', totalConsultations: 0, totalSpent: 0, currentDoctor: 'Not assigned', medicalConditions: ['None reported'] }
+  ]);
+
+  const filteredDoctors = doctorsData.filter(d =>
+    (d.name + d.specialty).toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (selectedFilter === 'all' || d.status === selectedFilter)
+  );
+  const filteredPatients = patientsData.filter(p =>
+    (p.name + p.email).toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (selectedFilter === 'all' || p.status === selectedFilter)
+  );
+
+  const openUserModal = (type) => {
+    setModalType(type);
+    setShowUserModal(true);
+    setNewUserData({ name: '', email: '', phone: '', specialty: '', experience: '', license: '', address: '', dateOfBirth: '', emergencyContact: '' });
+  };
+
+  const handleCreateUser = () => {
+    if (!newUserData.name || !newUserData.email) {
+      alert('Please fill at least name and email');
+      return;
+    }
+    if (modalType === 'doctor') {
+      const newDoctor = {
+        id: `D${String(doctorsData.length + 1).padStart(3, '0')}`,
+        name: newUserData.name,
+        email: newUserData.email,
+        phone: newUserData.phone,
+        specialty: newUserData.specialty,
+        experience: newUserData.experience,
+        license: newUserData.license,
+        status: 'active',
+        rating: 0,
+        consultationsToday: 0,
+        totalConsultations: 0,
+        joinDate: new Date().toISOString().split('T')[0],
+        lastActive: 'Just joined',
+        revenue: 0
       };
-      
-      fetchUsers();
-    }
-  }, [activeTab, usersData, apiCall, user]);
-
-  useEffect(() => {
-    if (activeTab === 'consultations' && !consultationsData) {
-      const fetchConsultations = async () => {
-        setConsultationsLoading(true);
-        try {
-          // Try admin endpoint first, fallback to mock data
-          try {
-            const response = await apiCall('/admin/consultations');
-            const data = await response.json();
-            
-            if (response.ok) {
-              setConsultationsData(data);
-            } else {
-              throw new Error('Admin consultations endpoint not available');
-            }
-          } catch (adminError) {
-            // Create mock consultations data
-            const mockConsultations = [
-              {
-                id: 1,
-                doctor_name: 'Dr. Sarah Johnson',
-                patient_name: 'John Doe',
-                scheduled_time: new Date().toISOString(),
-                status: 'completed',
-                diagnosis: 'Common cold',
-                notes: 'Patient recovering well'
-              },
-              {
-                id: 2,
-                doctor_name: 'Dr. Michael Chen',
-                patient_name: 'Jane Smith',
-                scheduled_time: new Date(Date.now() + 86400000).toISOString(), // Tomorrow
-                status: 'scheduled',
-                notes: 'Follow-up consultation'
-              },
-              {
-                id: 3,
-                doctor_name: 'Dr. Sarah Johnson',
-                patient_name: 'Bob Wilson',
-                scheduled_time: new Date(Date.now() - 86400000).toISOString(), // Yesterday
-                status: 'completed',
-                diagnosis: 'Hypertension monitoring',
-                notes: 'Blood pressure stable'
-              }
-            ];
-            
-            setConsultationsData({
-              consultations: mockConsultations,
-              total_count: mockConsultations.length
-            });
-          }
-        } catch (err) {
-          setError('Unable to load consultations data.');
-          console.error('Consultations fetch error:', err);
-        } finally {
-          setConsultationsLoading(false);
-        }
-      };
-      
-      fetchConsultations();
-    }
-  }, [activeTab, consultationsData, apiCall]);
-
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
-
-  const refetchUsers = async () => {
-    setUsersLoading(true);
-    try {
-      // Try to get patients first (this endpoint works from doctor dashboard)
-      const patientsResponse = await apiCall('/patients');
-      const patientsData = await patientsResponse.json();
-      
-      // Create users data structure that includes patients from doctor's endpoint
-      if (patientsResponse.ok && patientsData.patients) {
-        const mockUsers = [
-          // Current admin user
-          {
-            id: user?.id || 1,
-            first_name: user?.first_name || 'Admin',
-            last_name: user?.last_name || 'User',
-            email: user?.email || 'admin@kalafo.com',
-            role: 'admin',
-            is_active: true,
-            created_at: user?.created_at || new Date().toISOString()
-          },
-          // Mock doctors
-          {
-            id: 'doc1',
-            first_name: 'Sarah',
-            last_name: 'Johnson',
-            email: 'dr.johnson@kalafo.com',
-            role: 'doctor',
-            is_active: true,
-            created_at: new Date('2024-01-15').toISOString()
-          },
-          {
-            id: 'doc2',
-            first_name: 'Michael',
-            last_name: 'Chen',
-            email: 'dr.chen@kalafo.com',
-            role: 'doctor',
-            is_active: true,
-            created_at: new Date('2024-02-10').toISOString()
-          },
-          // Real patients from doctor's endpoint
-          ...patientsData.patients.map(patient => ({
-            ...patient,
-            role: 'patient',
-            is_active: true,
-            created_at: patient.created_at || new Date().toISOString()
-          }))
-        ];
-        
-        setUsersData({
-          users: mockUsers,
-          total_count: mockUsers.length
-        });
-      }
-    } catch (err) {
-      setError('Network error. Please check your connection.');
-      console.error('Users refetch error:', err);
-    } finally {
-      setUsersLoading(false);
-    }
-  };
-
-  const handleUserAction = async (userId, action) => {
-    try {
-      const response = await apiCall(`/admin/users/${userId}/${action}`, {
-        method: 'POST'
-      });
-      
-      if (response.ok) {
-        refetchUsers(); // Refresh users list
-      } else {
-        const data = await response.json();
-        setError(data.error || `Failed to ${action} user`);
-      }
-    } catch (err) {
-      setError('Network error. Please check your connection.');
-      console.error('User action error:', err);
-    }
-  };
-
-  const filteredAndSortedUsers = () => {
-    if (!usersData?.users) return [];
-    
-    let filtered = usersData.users;
-    
-    // Filter by role
-    if (userFilter !== 'all') {
-      filtered = filtered.filter(user => user.role === userFilter.slice(0, -1)); // Remove 's' from 'doctors'/'patients'
-    }
-    
-    // Filter by search term
-    filtered = filtered.filter(user =>
-      `${user.first_name} ${user.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.role.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    // Sort users
-    filtered.sort((a, b) => {
-      let aValue, bValue;
-      
-      switch (sortBy) {
-        case 'name':
-          aValue = `${a.first_name} ${a.last_name}`.toLowerCase();
-          bValue = `${b.first_name} ${b.last_name}`.toLowerCase();
-          break;
-        case 'email':
-          aValue = a.email.toLowerCase();
-          bValue = b.email.toLowerCase();
-          break;
-        case 'role':
-          aValue = a.role.toLowerCase();
-          bValue = b.role.toLowerCase();
-          break;
-        case 'status':
-          aValue = a.is_active ? 'active' : 'inactive';
-          bValue = b.is_active ? 'active' : 'inactive';
-          break;
-        case 'created':
-          aValue = new Date(a.created_at);
-          bValue = new Date(b.created_at);
-          break;
-        default:
-          return 0;
-      }
-
-      if (sortOrder === 'asc') {
-        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
-      } else {
-        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
-      }
-    });
-
-    return filtered;
-  };
-
-  const handleSort = (column) => {
-    if (sortBy === column) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+      setDoctorsData([...doctorsData, newDoctor]);
     } else {
-      setSortBy(column);
-      setSortOrder('asc');
+      const newPatient = {
+        id: `P${String(patientsData.length + 1).padStart(3, '0')}`,
+        name: newUserData.name,
+        email: newUserData.email,
+        phone: newUserData.phone,
+        age: newUserData.dateOfBirth ? (new Date().getFullYear() - new Date(newUserData.dateOfBirth).getFullYear()) : null,
+        dateOfBirth: newUserData.dateOfBirth,
+        address: newUserData.address,
+        emergencyContact: newUserData.emergencyContact,
+        status: 'new',
+        joinDate: new Date().toISOString().split('T')[0],
+        lastConsultation: 'Never',
+        totalConsultations: 0,
+        totalSpent: 0,
+        currentDoctor: 'Not assigned',
+        medicalConditions: ['None reported']
+      };
+      setPatientsData([...patientsData, newPatient]);
+    }
+    setShowUserModal(false);
+    alert(`New ${modalType} created successfully!`);
+  };
+
+  const toggleUserStatus = (userId, userType) => {
+    if (userType === 'doctor') {
+      setDoctorsData(doctorsData.map(doc => doc.id === userId ? { ...doc, status: doc.status === 'active' ? 'inactive' : 'active' } : doc));
+    } else {
+      setPatientsData(patientsData.map(p => p.id === userId ? { ...p, status: p.status === 'active' ? 'suspended' : 'active' } : p));
     }
   };
 
-  if (loading) {
-    return (
-      <div className="dashboard admin-dashboard">
-        <div className="loading-container">
-          <div className="loading-spinner">Loading...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="dashboard admin-dashboard">
-        <div className="error-container">
-          <h2>Error Loading Dashboard</h2>
-          <p>{error}</p>
-          <button onClick={() => window.location.reload()} className="retry-button">
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Use stats directly from dashboardData (no need for calculateStats anymore)
-  const stats = dashboardData || {
-    total_users: 0,
-    total_doctors: 0,
-    total_patients: 0,
-    total_consultations: 0,
-    active_consultations: 0,
-    recent_registrations: [],
-    system_health: { status: 'loading...', uptime: '...' }
-  };
-
-  return (
-    <div className="dashboard admin-dashboard">
-      <header className="dashboard-header">
-        <div>
-          <h1>Admin Dashboard</h1>
-          <p className="user-info">Administrator: {user?.first_name} {user?.last_name}</p>
-        </div>
-        <button className="logout-button" onClick={handleLogout}>
-          Logout
-        </button>
-      </header>
-      
-      <div className="dashboard-tabs">
-        <button 
-          className={activeTab === 'overview' ? 'active' : ''}
-          onClick={() => setActiveTab('overview')}
-        >
-          🏠 Overview
-        </button>
-        <button 
-          className={activeTab === 'users' ? 'active' : ''}
-          onClick={() => setActiveTab('users')}
-        >
-          👥 User Management {usersData && `(${usersData.total_count || 0})`}
-        </button>
-        <button 
-          className={activeTab === 'consultations' ? 'active' : ''}
-          onClick={() => setActiveTab('consultations')}
-        >
-          🩺 Consultations
-        </button>
-        <button 
-          className={activeTab === 'analytics' ? 'active' : ''}
-          onClick={() => setActiveTab('analytics')}
-        >
-          📊 Analytics
-        </button>
-        <button 
-          className={activeTab === 'settings' ? 'active' : ''}
-          onClick={() => setActiveTab('settings')}
-        >
-          ⚙️ Settings
-        </button>
-      </div>
-      
-      <div className="dashboard-content">
-        {activeTab === 'overview' && (
-          <section className="dashboard-section">
-            <h2>System Overview</h2>
-            
-            {/* Platform Statistics */}
-            <div className="stats-grid">
-              <div className="stat-card">
-                <div className="stat-icon">👥</div>
-                <div className="stat-content">
-                  <div className="stat-number">{stats.total_users}</div>
-                  <div className="stat-label">Total Users</div>
-                </div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-icon">👨‍⚕️</div>
-                <div className="stat-content">
-                  <div className="stat-number">{stats.total_doctors}</div>
-                  <div className="stat-label">Doctors</div>
-                </div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-icon">🤒</div>
-                <div className="stat-content">
-                  <div className="stat-number">{stats.total_patients}</div>
-                  <div className="stat-label">Patients</div>
-                </div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-icon">🩺</div>
-                <div className="stat-content">
-                  <div className="stat-number">{stats.total_consultations}</div>
-                  <div className="stat-label">Total Consultations</div>
-                </div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-icon">🔴</div>
-                <div className="stat-content">
-                  <div className="stat-number">{stats.active_consultations || 0}</div>
-                  <div className="stat-label">Active Sessions</div>
-                </div>
-              </div>
-              <div className="stat-card">
-                <div className="stat-icon">💚</div>
-                <div className="stat-content">
-                  <div className="stat-number">{stats.system_health?.uptime || '99.9%'}</div>
-                  <div className="stat-label">System Uptime</div>
-                </div>
-              </div>
+  const getDashboardContent = () => {
+    switch (activeTab) {
+      case 'dashboard':
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {/* Welcome */}
+            <div style={{ background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', borderRadius: '0.75rem', padding: '2rem', color: 'white' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: 0 }}>TeleMed Pro Administration</h2>
+              <p style={{ opacity: 0.9, margin: '0.5rem 0 0 0' }}>System overview and management dashboard. {systemStats.activeConsultations} active consultations in progress.</p>
             </div>
 
-            {/* System Health & Recent Activity */}
-            <div className="dashboard-grid">
-              <div className="enhanced-card">
-                <h3>System Health</h3>
-                <div className="vitals-display">
-                  <div className="vital-item">
-                    <div className="vital-label">Server Status</div>
-                    <div className="vital-value" style={{ color: 'var(--secondary-color)', fontSize: '1.5rem' }}>
-                      {stats.system_health?.status || 'Healthy'}
-                    </div>
+            {/* Key Metrics */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
+              {[
+                {
+                  iconBg: '#dbeafe',
+                  icon: <Users style={{ width: '1.25rem', height: '1.25rem', color: '#3b82f6' }} />,
+                  trend: <TrendingUp style={{ width: '1rem', height: '1rem', color: '#16a34a' }} />,
+                  value: systemStats.totalUsers,
+                  label: 'Total Users'
+                },
+                {
+                  iconBg: '#dcfce7',
+                  icon: <Stethoscope style={{ width: '1.25rem', height: '1.25rem', color: '#16a34a' }} />,
+                  trend: <CheckCircle style={{ width: '1rem', height: '1rem', color: '#16a34a' }} />,
+                  value: systemStats.totalDoctors,
+                  label: 'Active Doctors'
+                },
+                {
+                  iconBg: '#fef3c7',
+                  icon: <Heart style={{ width: '1.25rem', height: '1.25rem', color: '#d97706' }} />,
+                  trend: <TrendingUp style={{ width: '1rem', height: '1rem', color: '#16a34a' }} />,
+                  value: systemStats.totalPatients,
+                  label: 'Registered Patients'
+                },
+                {
+                  iconBg: '#fee2e2',
+                  icon: <DollarSign style={{ width: '1.25rem', height: '1.25rem', color: '#dc2626' }} />,
+                  trend: <TrendingUp style={{ width: '1rem', height: '1rem', color: '#16a34a' }} />,
+                  value: `$${systemStats.revenue.toLocaleString()}`,
+                  label: "Today's Revenue"
+                }
+              ].map((m, i) => (
+                <div key={i} style={card}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                    <div style={{ padding: '0.5rem', background: m.iconBg, borderRadius: '0.5rem' }}>{m.icon}</div>
+                    {m.trend}
                   </div>
-                  <div className="vital-item">
-                    <div className="vital-label">Database</div>
-                    <div className="vital-value" style={{ color: 'var(--secondary-color)', fontSize: '1.5rem' }}>
-                      Online
-                    </div>
-                  </div>
-                  <div className="vital-item">
-                    <div className="vital-label">API Response</div>
-                    <div className="vital-value" style={{ color: 'var(--secondary-color)', fontSize: '1.5rem' }}>
-                      Fast
-                    </div>
-                  </div>
+                  <p style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#111827', margin: 0 }}>{m.value}</p>
+                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>{m.label}</p>
                 </div>
-              </div>
-
-              <div className="enhanced-card">
-                <h3>Quick Actions</h3>
-                <div className="quick-actions">
-                  <button className="action-button primary">Create New User</button>
-                  <button className="action-button secondary">Generate Report</button>
-                  <button className="action-button outline">System Backup</button>
-                  <button className="action-button outline">Send Notifications</button>
-                </div>
-              </div>
+              ))}
             </div>
 
-            {/* Recent Registrations */}
-            {stats.recent_registrations && stats.recent_registrations.length > 0 && (
-              <div className="enhanced-card">
-                <h3>Recent Registrations</h3>
-                <div className="today-appointments">
-                  {stats.recent_registrations.slice(0, 5).map((registration, index) => (
-                    <div key={index} className="appointment-item">
-                      <div className="appointment-time">
-                        {new Date(registration.created_at).toLocaleDateString()}
-                      </div>
-                      <div className="appointment-patient">
-                        <strong>{registration.first_name} {registration.last_name}</strong>
-                        <p>{registration.role} • {registration.email}</p>
-                      </div>
-                      <div className="appointment-actions">
-                        <span className={`status-badge ${registration.is_active ? 'status-completed' : 'status-scheduled'}`}>
-                          {registration.is_active ? 'Active' : 'Pending'}
-                        </span>
+            {/* Summary + Recent */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+              <div style={card}>
+                <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#111827', margin: '0 0 1rem 0' }}>Today's Summary</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {[
+                    ['Scheduled Appointments', systemStats.todayAppointments, '#111827'],
+                    ['Completed Consultations', systemStats.completedToday, '#16a34a'],
+                    ['Active Sessions', systemStats.activeConsultations, '#d97706'],
+                    ['Average Rating', systemStats.avgRating, '#111827', 'star']
+                  ].map(([label, value, color, kind], i) => (
+                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>{label}</span>
+                      {kind === 'star' ? (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <Star style={{ width: '1rem', height: '1rem', color: '#fbbf24', fill: '#fbbf24' }} />
+                          <span style={{ fontSize: '1.125rem', fontWeight: 600, color }}>{value}</span>
+                        </div>
+                      ) : (
+                        <span style={{ fontSize: '1.125rem', fontWeight: 600, color }}>{value}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={card}>
+                <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#111827', margin: '0 0 1rem 0' }}>Recent Activity</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {recentActivities.map(a => (
+                    <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', background: '#f9fafb', borderRadius: '0.5rem' }}>
+                      <div style={{ width: 8, height: 8, borderRadius: '50%', background: a.status === 'success' ? '#16a34a' : a.status === 'warning' ? '#d97706' : '#3b82f6' }} />
+                      <div style={{ flex: 1 }}>
+                        <p style={{ fontSize: '0.875rem', color: '#111827', margin: 0 }}>{a.message}</p>
+                        <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0 }}>{a.timestamp}</p>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
-            )}
-          </section>
-        )}
+            </div>
 
-        {activeTab === 'users' && (
-          <section className="dashboard-section">
-            <h2>User Management</h2>
-            
-            {/* Debug Info */}
-            {process.env.NODE_ENV === 'development' && (
-              <div style={{ 
-                background: '#e8f4f8', 
-                border: '1px solid #bee5eb', 
-                borderRadius: '6px', 
-                padding: '1rem', 
-                marginBottom: '1rem',
-                fontSize: '0.9rem'
-              }}>
-                <strong>🔍 Debug Info:</strong><br/>
-                Users Loading: {usersLoading ? 'Yes' : 'No'}<br/>
-                Users Data Loaded: {usersData ? 'Yes' : 'No'}<br/>
-                Total Users: {usersData?.total_count || 0}<br/>
-                Check browser console for detailed API logs
+            {/* Quick Actions */}
+            <div style={card}>
+              <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#111827', margin: '0 0 1rem 0' }}>Quick Actions</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                {[
+                  { key: 'doctor', label: 'Add Doctor', desc: 'Register new medical professional', Icon: UserPlus, grad: 'linear-gradient(135deg, #3b82f6, #1d4ed8)' },
+                  { key: 'patient', label: 'Add Patient', desc: 'Register new patient', Icon: Heart, grad: 'linear-gradient(135deg, #16a34a, #15803d)' },
+                  { key: 'analytics', label: 'View Analytics', desc: 'Platform performance metrics', Icon: BarChart3, grad: 'linear-gradient(135deg, #d97706, #b45309)' },
+                  { key: 'alerts', label: 'System Alerts', desc: 'Monitor system status', Icon: AlertTriangle, grad: 'linear-gradient(135deg, #dc2626, #b91c1c)' }
+                ].map(({ key, label, desc, Icon, grad }) => (
+                  <button
+                    key={key}
+                    onClick={() => (key === 'doctor' || key === 'patient') ? openUserModal(key) : key === 'analytics' ? setActiveTab('analytics') : null}
+                    style={{ background: grad, color: 'white', padding: '1rem', borderRadius: '0.5rem', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+                  >
+                    <Icon style={{ width: '1.5rem', height: '1.5rem', marginBottom: '0.5rem', display: 'block' }} />
+                    <div style={{ fontSize: '0.875rem', fontWeight: 500, marginBottom: 4 }}>{label}</div>
+                    <div style={{ fontSize: '0.75rem', opacity: 0.9 }}>{desc}</div>
+                  </button>
+                ))}
               </div>
-            )}
-            
-            <div className="patients-controls">
-              <div className="search-box">
-                <input
-                  type="text"
-                  placeholder="🔍 Search users by name, email, or role..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="search-input"
-                />
+            </div>
+          </div>
+        );
+
+      case 'doctors':
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {/* Header */}
+            <div style={card}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#111827', margin: 0 }}>Doctor Management</h3>
+                <button
+                  onClick={() => openUserModal('doctor')}
+                  style={{ background: '#3b82f6', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.5rem', border: 'none', fontSize: '0.875rem', fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                >
+                  <UserPlus style={{ width: '1rem', height: '1rem' }} /> Add New Doctor
+                </button>
               </div>
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                <select 
-                  value={userFilter} 
-                  onChange={(e) => setUserFilter(e.target.value)}
-                  style={{ padding: '8px 12px', borderRadius: '6px', border: '2px solid #e1e5e9' }}
-                >
-                  <option value="all">All Users</option>
-                  <option value="doctors">Doctors</option>
-                  <option value="patients">Patients</option>
-                </select>
-                <div className="table-controls">
-                  <span>Total: {usersData?.total_count || 0} users</span>
+                <div style={{ position: 'relative', flex: 1 }}>
+                  <Search style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', width: '1rem', height: '1rem', color: '#6b7280' }} />
+                  <input type="text" placeholder="Search doctors by name or specialty..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ ...inputStyle, paddingLeft: '2.5rem' }} />
                 </div>
+                <select value={selectedFilter} onChange={(e) => setSelectedFilter(e.target.value)} style={{ ...inputStyle, width: 'auto' }}>
+                  <option value="all">All Status</option>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
               </div>
             </div>
 
-            {usersLoading ? (
-              <div className="loading-spinner">Loading users...</div>
-            ) : usersData && (
-              <div className="patients-table-container">
-                <table className="patients-table">
-                  <thead>
-                    <tr>
-                      <th onClick={() => handleSort('name')} className="sortable">
-                        Name {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
-                      </th>
-                      <th onClick={() => handleSort('email')} className="sortable">
-                        Email {sortBy === 'email' && (sortOrder === 'asc' ? '↑' : '↓')}
-                      </th>
-                      <th onClick={() => handleSort('role')} className="sortable">
-                        Role {sortBy === 'role' && (sortOrder === 'asc' ? '↑' : '↓')}
-                      </th>
-                      <th onClick={() => handleSort('status')} className="sortable">
-                        Status {sortBy === 'status' && (sortOrder === 'asc' ? '↑' : '↓')}
-                      </th>
-                      <th onClick={() => handleSort('created')} className="sortable">
-                        Joined {sortBy === 'created' && (sortOrder === 'asc' ? '↑' : '↓')}
-                      </th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredAndSortedUsers().map(user => (
-                      <tr key={user.id}>
-                        <td>
-                          <div className="patient-name">
-                            <div className="patient-avatar">
-                              {user.first_name[0]}{user.last_name[0]}
-                            </div>
-                            <div>
-                              <strong>{user.first_name} {user.last_name}</strong>
-                              <div className="patient-id">ID: {user.id}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>{user.email}</td>
-                        <td>
-                          <span className={`status-badge ${user.role === 'doctor' ? 'status-completed' : 'status-scheduled'}`}>
-                            {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
-                          </span>
-                        </td>
-                        <td>
-                          <span className={`status-badge ${user.is_active ? 'status-completed' : 'status-cancelled'}`}>
-                            {user.is_active ? 'Active' : 'Inactive'}
-                          </span>
-                        </td>
-                        <td>
-                          {new Date(user.created_at).toLocaleDateString()}
-                        </td>
-                        <td>
-                          <div className="table-actions">
-                            <button 
-                              className={`table-btn ${user.is_active ? 'secondary' : 'primary'}`}
-                              onClick={() => handleUserAction(user.id, user.is_active ? 'deactivate' : 'activate')}
-                            >
-                              {user.is_active ? 'Deactivate' : 'Activate'}
-                            </button>
-                            <button className="table-btn primary">Edit</button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                
-                {filteredAndSortedUsers().length === 0 && (
-                  <div className="no-results">
-                    <p>No users found matching "{searchTerm}"</p>
-                  </div>
-                )}
-              </div>
-            )}
-          </section>
-        )}
-
-        {activeTab === 'consultations' && (
-          <section className="dashboard-section">
-            <h2>Consultation Management</h2>
-            
-            {consultationsLoading ? (
-              <div className="loading-spinner">Loading consultations...</div>
-            ) : (
-              <div className="enhanced-card">
-                <h3>Recent Consultations</h3>
-                {consultationsData?.consultations ? (
-                  <div className="consultations-list">
-                    {consultationsData.consultations.slice(0, 10).map(consultation => (
-                      <div key={consultation.id} className="consultation-item">
-                        <div className="consultation-header">
-                          <strong>
-                            Dr. {consultation.doctor_name} → {consultation.patient_name}
-                          </strong>
-                          <span className={`status-badge status-${consultation.status}`}>
-                            {consultation.status}
-                          </span>
+            {/* List */}
+            <div style={card}>
+              <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#111827', margin: '0 0 1rem 0' }}>Doctors ({filteredDoctors.length})</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {filteredDoctors.map(doctor => (
+                  <div key={doctor.id} style={{ border: '1px solid #e5e7eb', borderRadius: '0.75rem', padding: '1.25rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div style={{ width: '3rem', height: '3rem', background: '#3b82f6', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <Stethoscope style={{ width: '1.5rem', height: '1.5rem', color: 'white' }} />
                         </div>
-                        <div className="consultation-details">
-                          <p>📅 {new Date(consultation.scheduled_time).toLocaleDateString()}</p>
-                          <p>⏰ {new Date(consultation.scheduled_time).toLocaleTimeString()}</p>
-                          {consultation.diagnosis && (
-                            <p><strong>Diagnosis:</strong> {consultation.diagnosis}</p>
-                          )}
-                          {consultation.notes && (
-                            <p><strong>Notes:</strong> {consultation.notes}</p>
-                          )}
+                        <div>
+                          <h4 style={{ fontSize: '1rem', fontWeight: 500, color: '#111827', margin: 0 }}>{doctor.name}</h4>
+                          <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: '4px 0 0 0' }}>{doctor.specialty} • {doctor.experience}</p>
+                          <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: '4px 0 0 0' }}>License: {doctor.license} • ID: {doctor.id}</p>
                         </div>
                       </div>
-                    ))}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ fontSize: '0.75rem', padding: '0.25rem 0.75rem', borderRadius: '9999px', background: doctor.status === 'active' ? '#dcfce7' : '#fee2e2', color: doctor.status === 'active' ? '#166534' : '#dc2626', fontWeight: 500 }}>{doctor.status}</span>
+                        <button onClick={() => toggleUserStatus(doctor.id, 'doctor')} style={{ background: doctor.status === 'active' ? '#fee2e2' : '#dcfce7', color: doctor.status === 'active' ? '#dc2626' : '#16a34a', padding: '0.5rem', borderRadius: '0.375rem', border: 'none', cursor: 'pointer' }}>
+                          {doctor.status === 'active' ? <Lock style={{ width: '1rem', height: '1rem' }} /> : <Unlock style={{ width: '1rem', height: '1rem' }} />}
+                        </button>
+                        <button style={{ background: '#f3f4f6', border: '1px solid #d1d5db', borderRadius: '0.375rem', padding: '0.5rem', cursor: 'pointer' }}>
+                          <Edit style={{ width: '1rem', height: '1rem', color: '#6b7280' }} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
+                      <div>
+                        <strong style={{ fontSize: '0.875rem', color: '#374151' }}>Contact</strong>
+                        <p style={{ margin: '4px 0 0 0', color: '#6b7280', fontSize: '0.875rem' }}>{doctor.email}</p>
+                        <p style={{ margin: '2px 0 0 0', color: '#6b7280', fontSize: '0.875rem' }}>{doctor.phone}</p>
+                      </div>
+                      <div>
+                        <strong style={{ fontSize: '0.875rem', color: '#374151' }}>Performance</strong>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                          <Star style={{ width: '0.875rem', height: '0.875rem', color: '#fbbf24', fill: '#fbbf24' }} />
+                          <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>{doctor.rating}/5.0</span>
+                        </div>
+                        <p style={{ margin: '2px 0 0 0', color: '#6b7280', fontSize: '0.875rem' }}>{doctor.totalConsultations} total consultations</p>
+                      </div>
+                      <div>
+                        <strong style={{ fontSize: '0.875rem', color: '#374151' }}>Today</strong>
+                        <p style={{ margin: '4px 0 0 0', color: '#6b7280', fontSize: '0.875rem' }}>{doctor.consultationsToday} consultations</p>
+                        <p style={{ margin: '2px 0 0 0', color: '#6b7280', fontSize: '0.875rem' }}>Revenue: ${' '}{doctor.revenue.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <strong style={{ fontSize: '0.875rem', color: '#374151' }}>Status</strong>
+                        <p style={{ margin: '4px 0 0 0', color: '#6b7280', fontSize: '0.875rem' }}>Joined: {doctor.joinDate}</p>
+                        <p style={{ margin: '2px 0 0 0', color: '#6b7280', fontSize: '0.875rem' }}>Last active: {doctor.lastActive}</p>
+                      </div>
+                    </div>
                   </div>
-                ) : (
-                  <p>No consultation data available.</p>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'patients':
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div style={card}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#111827', margin: 0 }}>Patient Management</h3>
+                <button
+                  onClick={() => openUserModal('patient')}
+                  style={{ background: '#3b82f6', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.5rem', border: 'none', fontSize: '0.875rem', fontWeight: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                >
+                  <UserPlus style={{ width: '1rem', height: '1rem' }} /> Add New Patient
+                </button>
+              </div>
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <div style={{ position: 'relative', flex: 1 }}>
+                  <Search style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', width: '1rem', height: '1rem', color: '#6b7280' }} />
+                  <input type="text" placeholder="Search patients by name or email..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ ...inputStyle, paddingLeft: '2.5rem' }} />
+                </div>
+                <select value={selectedFilter} onChange={(e) => setSelectedFilter(e.target.value)} style={{ ...inputStyle, width: 'auto' }}>
+                  <option value="all">All Status</option>
+                  <option value="active">Active</option>
+                  <option value="new">New</option>
+                  <option value="suspended">Suspended</option>
+                </select>
+              </div>
+            </div>
+
+            <div style={card}>
+              <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#111827', margin: '0 0 1rem 0' }}>Patients ({filteredPatients.length})</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {filteredPatients.map(patient => (
+                  <div key={patient.id} style={{ border: '1px solid #e5e7eb', borderRadius: '0.75rem', padding: '1.25rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div style={{ width: '3rem', height: '3rem', background: '#16a34a', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <Heart style={{ width: '1.5rem', height: '1.5rem', color: 'white' }} />
+                        </div>
+                        <div>
+                          <h4 style={{ fontSize: '1rem', fontWeight: 500, color: '#111827', margin: 0 }}>{patient.name}</h4>
+                          <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: '4px 0 0 0' }}>Age: {patient.age} • ID: {patient.id}</p>
+                          <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: '4px 0 0 0' }}>DOB: {patient.dateOfBirth}</p>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ fontSize: '0.75rem', padding: '0.25rem 0.75rem', borderRadius: '9999px', background: patient.status === 'active' ? '#dcfce7' : patient.status === 'new' ? '#fef3c7' : '#fee2e2', color: patient.status === 'active' ? '#166534' : patient.status === 'new' ? '#92400e' : '#dc2626', fontWeight: 500 }}>{patient.status}</span>
+                        <button onClick={() => toggleUserStatus(patient.id, 'patient')} style={{ background: patient.status === 'suspended' ? '#dcfce7' : '#fee2e2', color: patient.status === 'suspended' ? '#16a34a' : '#dc2626', padding: '0.5rem', borderRadius: '0.375rem', border: 'none', cursor: 'pointer' }}>
+                          {patient.status === 'suspended' ? <Unlock style={{ width: '1rem', height: '1rem' }} /> : <Lock style={{ width: '1rem', height: '1rem' }} />}
+                        </button>
+                        <button style={{ background: '#f3f4f6', border: '1px solid #d1d5db', borderRadius: '0.375rem', padding: '0.5rem', cursor: 'pointer' }}>
+                          <Edit style={{ width: '1rem', height: '1rem', color: '#6b7280' }} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                      <div>
+                        <strong style={{ fontSize: '0.875rem', color: '#374151' }}>Contact</strong>
+                        <p style={{ margin: '4px 0 0 0', color: '#6b7280', fontSize: '0.875rem' }}>{patient.email}</p>
+                        <p style={{ margin: '2px 0 0 0', color: '#6b7280', fontSize: '0.875rem' }}>{patient.phone}</p>
+                        <p style={{ margin: '2px 0 0 0', color: '#6b7280', fontSize: '0.875rem' }}>Emergency: {patient.emergencyContact}</p>
+                      </div>
+                      <div>
+                        <strong style={{ fontSize: '0.875rem', color: '#374151' }}>Medical Info</strong>
+                        <p style={{ margin: '4px 0 0 0', color: '#6b7280', fontSize: '0.875rem' }}>Assigned: {patient.currentDoctor}</p>
+                        <p style={{ margin: '2px 0 0 0', color: '#6b7280', fontSize: '0.875rem' }}>Conditions: {patient.medicalConditions.join(', ')}</p>
+                      </div>
+                      <div>
+                        <strong style={{ fontSize: '0.875rem', color: '#374151' }}>Activity</strong>
+                        <p style={{ margin: '4px 0 0 0', color: '#6b7280', fontSize: '0.875rem' }}>{patient.totalConsultations} consultations</p>
+                        <p style={{ margin: '2px 0 0 0', color: '#6b7280', fontSize: '0.875rem' }}>Last visit: {patient.lastConsultation}</p>
+                        <p style={{ margin: '2px 0 0 0', color: '#6b7280', fontSize: '0.875rem' }}>Total spent: ${' '}{patient.totalSpent.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <strong style={{ fontSize: '0.875rem', color: '#374151' }}>Registration</strong>
+                        <p style={{ margin: '4px 0 0 0', color: '#6b7280', fontSize: '0.875rem' }}>Joined: {patient.joinDate}</p>
+                        <p style={{ margin: '2px 0 0 0', color: '#6b7280', fontSize: '0.875rem' }}>Address: {patient.address}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'analytics':
+        return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div style={card}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#111827', margin: 0 }}>Platform Analytics</h3>
+                <select value={selectedTimeRange} onChange={(e) => setSelectedTimeRange(e.target.value)} style={{ ...inputStyle, width: 'auto' }}>
+                  <option value="7days">Last 7 Days</option>
+                  <option value="30days">Last 30 Days</option>
+                  <option value="90days">Last 90 Days</option>
+                  <option value="1year">Last Year</option>
+                </select>
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
+              <div style={card}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 500, color: '#111827', margin: 0 }}>Total Revenue</h4>
+                  <TrendingUp style={{ width: '1.25rem', height: '1.25rem', color: '#16a34a' }} />
+                </div>
+                <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#111827', margin: 0 }}>$147,250</p>
+                <p style={{ fontSize: '0.875rem', color: '#16a34a', margin: 0 }}>+12.5% from last period</p>
+              </div>
+              <div style={card}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 500, color: '#111827', margin: 0 }}>Total Consultations</h4>
+                  <Activity style={{ width: '1.25rem', height: '1.25rem', color: '#3b82f6' }} />
+                </div>
+                <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#111827', margin: 0 }}>2,847</p>
+                <p style={{ fontSize: '0.875rem', color: '#3b82f6', margin: 0 }}>+8.2% from last period</p>
+              </div>
+              <div style={card}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 500, color: '#111827', margin: 0 }}>Avg Session Duration</h4>
+                  <Clock3 style={{ width: '1.25rem', height: '1.25rem', color: '#d97706' }} />
+                </div>
+                <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#111827', margin: 0 }}>23.4 min</p>
+                <p style={{ fontSize: '0.875rem', color: '#d97706', margin: 0 }}>+2.1 min from last period</p>
+              </div>
+              <div style={card}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 500, color: '#111827', margin: 0 }}>Patient Satisfaction</h4>
+                  <Award style={{ width: '1.25rem', height: '1.25rem', color: '#dc2626' }} />
+                </div>
+                <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#111827', margin: 0 }}>4.8/5.0</p>
+                <p style={{ fontSize: '0.875rem', color: '#16a34a', margin: 0 }}>+0.2 from last period</p>
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1.5rem' }}>
+              <div style={card}>
+                <h4 style={{ fontSize: '1rem', fontWeight: 500, color: '#111827', margin: '0 0 1rem 0' }}>Top Performing Doctors</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {[...doctorsData].sort((a, b) => b.rating - a.rating).slice(0, 5).map((d, i) => (
+                    <div key={d.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <span style={{ width: 24, height: 24, background: i < 3 ? '#fbbf24' : '#d1d5db', color: i < 3 ? 'white' : '#6b7280', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 'bold' }}>{i + 1}</span>
+                        <span style={{ fontSize: '0.875rem', color: '#111827' }}>{d.name}</span>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <Star style={{ width: '0.875rem', height: '0.875rem', color: '#fbbf24', fill: '#fbbf24' }} />
+                        <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>{d.rating}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div style={card}>
+                <h4 style={{ fontSize: '1rem', fontWeight: 500, color: '#111827', margin: '0 0 1rem 0' }}>System Health</h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {[
+                    ['Server Uptime', '99.9%', '#16a34a'],
+                    ['Active Connections', '1,247', '#111827'],
+                    ['Database Health', 'Optimal', '#16a34a'],
+                    ['Response Time', '127ms', '#16a34a']
+                  ].map(([k, v, c], i) => (
+                    <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>{k}</span>
+                      <span style={{ fontSize: '0.875rem', fontWeight: 500, color: c }}>{v}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div style={{ minHeight: '100vh', background: '#f9fafb' }}>
+      {/* Header */}
+      <header style={{ background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', borderBottom: '1px solid #e5e7eb' }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '4rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <div style={{ width: '2rem', height: '2rem', background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', borderRadius: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Shield style={{ width: '1.25rem', height: '1.25rem', color: 'white' }} />
+                </div>
+                <h1 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#111827', margin: 0 }}>TeleMed Pro - Admin Panel</h1>
+              </div>
+              <nav style={{ display: 'flex', gap: '2rem' }}>
+                {[
+                  { key: 'dashboard', label: 'Dashboard' },
+                  { key: 'doctors', label: 'Doctors' },
+                  { key: 'patients', label: 'Patients' },
+                  { key: 'analytics', label: 'Analytics' }
+                ].map(t => (
+                  <button
+                    key={t.key}
+                    onClick={() => setActiveTab(t.key)}
+                    style={{
+                      padding: '0.5rem 0.75rem',
+                      fontSize: '0.875rem',
+                      fontWeight: 500,
+                      borderRadius: '0.375rem',
+                      border: 'none',
+                      cursor: 'pointer',
+                      background: activeTab === t.key ? '#dbeafe' : 'transparent',
+                      color: activeTab === t.key ? '#1d4ed8' : '#6b7280'
+                    }}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </nav>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <button title="Notifications" style={{ padding: '0.5rem', background: '#f3f4f6', border: 'none', borderRadius: '0.375rem', cursor: 'pointer' }}>
+                <Bell style={{ width: '1.25rem', height: '1.25rem', color: '#6b7280' }} />
+              </button>
+              <button title="Settings" style={{ padding: '0.5rem', background: '#f3f4f6', border: 'none', borderRadius: '0.375rem', cursor: 'pointer' }}>
+                <Settings style={{ width: '1.25rem', height: '1.25rem', color: '#6b7280' }} />
+              </button>
+              <div style={{ width: '2rem', height: '2rem', background: '#1d4ed8', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ color: 'white', fontSize: '0.875rem', fontWeight: 600 }}>AD</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main */}
+      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '2rem 1rem' }}>
+        {getDashboardContent()}
+      </div>
+
+      {/* Create User Modal */}
+      {showUserModal && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 60 }}>
+          <div style={{ width: 'min(720px, 94vw)', background: 'white', borderRadius: '0.75rem', boxShadow: '0 10px 25px rgba(0,0,0,0.2)' }}>
+            <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <h3 style={{ margin: 0, fontSize: '1.125rem', fontWeight: 600, color: '#111827' }}>Add {modalType === 'doctor' ? 'Doctor' : 'Patient'}</h3>
+              <button onClick={() => setShowUserModal(false)} style={{ background: 'transparent', border: 'none', cursor: 'pointer' }}>
+                <X style={{ width: '1.1rem', height: '1.1rem', color: '#6b7280' }} />
+              </button>
+            </div>
+
+            <div style={{ padding: '1rem 1.25rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
+                {field('Full Name', <input value={newUserData.name} onChange={(e) => setNewUserData({ ...newUserData, name: e.target.value })} style={inputStyle} placeholder="Jane Doe" />)}
+                {field('Email', <input type="email" value={newUserData.email} onChange={(e) => setNewUserData({ ...newUserData, email: e.target.value })} style={inputStyle} placeholder="jane@domain.com" />)}
+                {field('Phone', <input value={newUserData.phone} onChange={(e) => setNewUserData({ ...newUserData, phone: e.target.value })} style={inputStyle} placeholder="+1 555-0123" />)}
+
+                {modalType === 'doctor' && (
+                  <>
+                    {field('Specialty', <input value={newUserData.specialty} onChange={(e) => setNewUserData({ ...newUserData, specialty: e.target.value })} style={inputStyle} placeholder="Cardiologist" />)}
+                    {field('Experience', <input value={newUserData.experience} onChange={(e) => setNewUserData({ ...newUserData, experience: e.target.value })} style={inputStyle} placeholder="10 years" />)}
+                    {field('License No.', <input value={newUserData.license} onChange={(e) => setNewUserData({ ...newUserData, license: e.target.value })} style={inputStyle} placeholder="MD123456" />)}
+                  </>
+                )}
+
+                {modalType === 'patient' && (
+                  <>
+                    {field('Date of Birth', <input type="date" value={newUserData.dateOfBirth} onChange={(e) => setNewUserData({ ...newUserData, dateOfBirth: e.target.value })} style={inputStyle} />)}
+                    {field('Address', <input value={newUserData.address} onChange={(e) => setNewUserData({ ...newUserData, address: e.target.value })} style={inputStyle} placeholder="123 Main St" />)}
+                    {field('Emergency Contact', <input value={newUserData.emergencyContact} onChange={(e) => setNewUserData({ ...newUserData, emergencyContact: e.target.value })} style={inputStyle} placeholder="+1 555-0456" />)}
+                  </>
                 )}
               </div>
-            )}
-          </section>
-        )}
-
-        {activeTab === 'analytics' && (
-          <section className="dashboard-section">
-            <h2>Platform Analytics</h2>
-            
-            <div className="enhanced-card">
-              <h3>Usage Statistics</h3>
-              <div className="stats-grid">
-                <div className="stat-card">
-                  <div className="stat-icon">📈</div>
-                  <div className="stat-content">
-                    <div className="stat-number">+{stats.recent_registrations?.length || 0}</div>
-                    <div className="stat-label">New Users This Week</div>
-                  </div>
-                </div>
-                <div className="stat-card">
-                  <div className="stat-icon">💬</div>
-                  <div className="stat-content">
-                    <div className="stat-number">{stats.active_consultations || 0}</div>
-                    <div className="stat-label">Active Consultations</div>
-                  </div>
-                </div>
-                <div className="stat-card">
-                  <div className="stat-icon">⏱️</div>
-                  <div className="stat-content">
-                    <div className="stat-number">~25min</div>
-                    <div className="stat-label">Avg Session Duration</div>
-                  </div>
-                </div>
-                <div className="stat-card">
-                  <div className="stat-icon">📊</div>
-                  <div className="stat-content">
-                    <div className="stat-number">94%</div>
-                    <div className="stat-label">Patient Satisfaction</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div style={{ marginTop: '2rem', padding: '2rem', background: '#f8f9fa', borderRadius: '8px' }}>
-                <h4>Analytics Dashboard Coming Soon</h4>
-                <p>Detailed charts and reports for platform usage, user engagement, and consultation trends will be available here.</p>
-              </div>
             </div>
-          </section>
-        )}
 
-        {activeTab === 'settings' && (
-          <section className="dashboard-section">
-            <h2>System Settings</h2>
-            
-            <div className="enhanced-card">
-              <h3>Platform Configuration</h3>
-              <div className="quick-actions">
-                <button className="action-button outline">Email Settings</button>
-                <button className="action-button outline">Security Settings</button>
-                <button className="action-button outline">Backup & Recovery</button>
-                <button className="action-button outline">API Configuration</button>
-                <button className="action-button outline">User Permissions</button>
-                <button className="action-button outline">System Maintenance</button>
-              </div>
-              
-              <div style={{ marginTop: '2rem', padding: '2rem', background: '#f8f9fa', borderRadius: '8px' }}>
-                <h4>Configuration Panel</h4>
-                <p>Advanced system settings and configuration options will be implemented here. This includes user role management, system parameters, and integration settings.</p>
-              </div>
+            <div style={{ padding: '0.75rem 1.25rem', borderTop: '1px solid #e5e7eb', display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+              <button onClick={() => setShowUserModal(false)} style={{ background: '#f3f4f6', color: '#374151', border: '1px solid #d1d5db', borderRadius: '0.5rem', padding: '0.5rem 0.9rem', cursor: 'pointer' }}>Cancel</button>
+              <button onClick={handleCreateUser} style={{ background: '#1d4ed8', color: 'white', border: 'none', borderRadius: '0.5rem', padding: '0.5rem 0.9rem', cursor: 'pointer', fontWeight: 600 }}>Create</button>
             </div>
-          </section>
-        )}
-      </div>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default AdminDashboard;
