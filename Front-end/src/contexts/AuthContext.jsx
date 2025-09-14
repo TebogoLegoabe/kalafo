@@ -1,4 +1,3 @@
-// src/contexts/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
@@ -42,6 +41,39 @@ export const AuthProvider = ({ children }) => {
     }
     setLoading(false);
   }, []);
+
+// Refresh /api/me on load if we have a token (handles hard refresh)
+useEffect(() => {
+  const storedToken = localStorage.getItem('token');
+  if (!storedToken) return;
+
+  // If we already hydrated user from localStorage, skip
+  const storedUser = localStorage.getItem('user');
+  if (storedUser) return;
+
+  (async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/me`, {
+        headers: { Authorization: `Bearer ${storedToken}` }
+      });
+      if (!res.ok) throw new Error('Failed to fetch profile');
+      const me = await res.json();
+      localStorage.setItem('user', JSON.stringify(me));
+      setUser(me);
+      setIsAuthenticated(true);
+      setUserRole(me.role);
+      setUserEmail(me.email);
+      setToken(storedToken);
+    } catch (e) {
+      console.error('Profile refresh failed:', e);
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setIsAuthenticated(false);
+      setUser(null);
+      setToken(null);
+    }
+  })();
+}, []);
 
   const login = async (email, password, role) => {
     try {

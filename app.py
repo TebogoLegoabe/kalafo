@@ -23,16 +23,20 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)
 # Initialize extensions
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
-CORS(app, 
+
+CORS(app,
      origins=[
          "http://localhost:3000",
+         "http://localhost:5173",
          "https://kalafo.com",
-         "https://www.kalafo.com"
-     ], 
-     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"], 
+         "https://www.kalafo.com",
+         "https://*.vercel.app"   
+     ],
+     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
      allow_headers=["Content-Type", "Authorization"],
      supports_credentials=True
 )
+
 # User Model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -429,6 +433,21 @@ def test_no_jwt():
 @app.route('/api/health', methods=['GET'])
 def health_check():
     return jsonify({'status': 'healthy', 'message': 'Kalafo API is running'}), 200
+
+
+@app.route('/api/me', methods=['GET'])
+@jwt_required()
+def me():
+    try:
+        current_user_id = int(get_jwt_identity())
+        user = User.query.get(current_user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+        return jsonify(user.to_dict()), 200
+    except Exception as e:
+        print(f"❌ /api/me ERROR: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
 
 # Production configuration for Render
 def create_app():
