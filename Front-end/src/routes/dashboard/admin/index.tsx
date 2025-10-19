@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Users, Stethoscope, CalendarCheck, Activity, Loader2, Search, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Users, Stethoscope, CalendarCheck, Activity, Loader2, Search, ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react'
 import { format } from 'date-fns'
 
 export const Route = createFileRoute('/dashboard/admin/')({
@@ -22,15 +22,20 @@ function RouteComponent() {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
 
-  const { data: dashboardData, isLoading: isDashboardLoading } = useQuery({
+  const { data: dashboardData, isLoading: isDashboardLoading, isFetching: isDashboardFetching, refetch: refetchDashboard } = useQuery({
     queryKey: ['admin-dashboard'],
     queryFn: () => getAdminDashboard(),
   })
 
-  const { data: usersData, isLoading: isUsersLoading } = useQuery({
+  const { data: usersData, isLoading: isUsersLoading, isFetching: isUsersFetching, refetch: refetchUsers } = useQuery({
     queryKey: ['all-users'],
     queryFn: () => getAllUsers(),
   })
+
+  const isRefreshing = isDashboardFetching || isUsersFetching
+  const handleRefresh = async () => {
+    await Promise.all([refetchDashboard(), refetchUsers()])
+  }
 
   const stats = dashboardData?.stats
   const users = usersData?.users || []
@@ -169,12 +174,18 @@ function RouteComponent() {
 
       {/* Users Table */}
       <Card className="border-teal-100">
-        <CardHeader>
-          <CardTitle>All Users</CardTitle>
-          <CardDescription>
-            Showing {paginatedUsers.length} of {filteredUsers.length} users
-            {filteredUsers.length !== users.length && ` (filtered from ${users.length} total)`}
-          </CardDescription>
+        <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <CardTitle>All Users</CardTitle>
+            <CardDescription>
+              Showing {paginatedUsers.length} of {filteredUsers.length} users
+              {filteredUsers.length !== users.length && ` (filtered from ${users.length} total)`}
+            </CardDescription>
+          </div>
+          <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isRefreshing}>
+            <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            <span className="ml-2">Refresh</span>
+          </Button>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Filters */}
