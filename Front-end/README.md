@@ -1,211 +1,290 @@
-# Kalafo Telemedicine Platform
+Welcome to your new TanStack app! 
 
-A modern, full-stack telemedicine platform that connects patients with healthcare providers through secure remote consultations. Built with React frontend and Flask backend with role-based authentication and real-time dashboard management.
+# Getting Started
 
-## 🌟 Features
-
-### 🔐 Authentication & Authorization
-
-- **JWT-based authentication** with secure token management
-- **Role-based access control** (Admin, Doctor, Patient)
-- **Protected routes** with automatic redirection
-- **Password hashing** with bcrypt for security
-
-### 👨‍⚕️ Role-Specific Dashboards
-
-#### Admin Dashboard
-
-- System overview with real-time statistics
-- User management (doctors, patients)
-- Consultation monitoring
-- Recent activity tracking
-
-#### Doctor Dashboard
-
-- Upcoming consultation management
-- Patient consultation history
-- Schedule overview and management
-- Quick action tools for appointment handling
-
-#### Patient Dashboard
-
-- Upcoming consultations view
-- Medical history and records
-- Health data tracking
-- Appointment booking interface
-
-### 🏥 Core Functionality
-
-- **Secure consultation scheduling**
-- **Medical record management**
-- **Multi-role user system**
-- **Real-time dashboard updates**
-- **Responsive design** for all devices
-
-## 🛠️ Tech Stack
-
-### Frontend
-
-- **React 18** - Modern React with hooks
-- **React Router** - Client-side routing
-- **Tailwind CSS** - Utility-first styling
-- **Context API** - State management
-- **Fetch API** - HTTP client
-
-### Backend
-
-- **Flask** - Python web framework
-- **Flask-SQLAlchemy** - ORM for database operations
-- **Flask-JWT-Extended** - JWT authentication
-- **Flask-CORS** - Cross-origin resource sharing
-- **SQLite** - Lightweight database (development)
-- **bcrypt** - Password hashing
-
-### Development Tools
-
-- **Python Virtual Environment** - Dependency isolation
-- **npm** - Package management
-- **Git** - Version control
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- **Node.js** (v14 or higher)
-- **Python** (v3.8 or higher)
-- **Git**
-
-### Installation
-
-#### 1. Clone the Repository
+To run this application:
 
 ```bash
-git clone https://github.com/yourusername/kalafo-telemedicine.git
-cd kalafo-telemedicine
-```
-
-#### 2. Backend Setup
-
-```bash
-# Navigate to backend directory
-cd Back-end
-
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-# Windows:
-venv\Scripts\activate
-# macOS/Linux:
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Create environment file
-cp .env.example .env
-# Edit .env with your configuration
-
-# Initialize database
-python init_db.py
-
-# Start Flask server
-python run.py
-```
-
-#### 3. Frontend Setup
-
-```bash
-# Navigate to frontend directory (new terminal)
-cd Front-end
-
-# Install dependencies
 npm install
-
-# Start React development server
-npm start
+npm run start
 ```
 
-### 4. Access the Application
+# Building For Production
 
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:5000
-- **API Health Check**: http://localhost:5000/api/health
-
-## 🔌 API Endpoints
-
-### Authentication
-
-- `POST /api/register` - User registration
-- `POST /api/login` - User authentication
-- `GET /api/health` - Service health check
-
-### Dashboard APIs (Protected)
-
-- `GET /api/dashboard/admin` - Admin dashboard data
-- `GET /api/dashboard/doctor` - Doctor dashboard data
-- `GET /api/dashboard/patient` - Patient dashboard data
-
-### User Management
-
-- `GET /api/users` - List all users (Admin only)
-
-## 🏃‍♂️ Development Workflow
-
-### Running in Development Mode
-
-1. **Start Backend** (Terminal 1):
+To build this application for production:
 
 ```bash
-cd Back-end
-source venv/bin/activate  # or venv\Scripts\activate on Windows
-python run.py
+npm run build
 ```
 
-2. **Start Frontend** (Terminal 2):
+## Testing
+
+This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
 
 ```bash
-cd Front-end
-npm start
+npm run test
 ```
 
-### Database Management
+## Styling
 
-**Reset Database:**
+This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+
+
+
+
+## Routing
+This project uses [TanStack Router](https://tanstack.com/router). The initial setup is a file based router. Which means that the routes are managed as files in `src/routes`.
+
+### Adding A Route
+
+To add a new route to your application just add another a new file in the `./src/routes` directory.
+
+TanStack will automatically generate the content of the route file for you.
+
+Now that you have two routes you can use a `Link` component to navigate between them.
+
+### Adding Links
+
+To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
+
+```tsx
+import { Link } from "@tanstack/react-router";
+```
+
+Then anywhere in your JSX you can use it like so:
+
+```tsx
+<Link to="/about">About</Link>
+```
+
+This will create a link that will navigate to the `/about` route.
+
+More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
+
+### Using A Layout
+
+In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you use the `<Outlet />` component.
+
+Here is an example layout that includes a header:
+
+```tsx
+import { Outlet, createRootRoute } from '@tanstack/react-router'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+
+import { Link } from "@tanstack/react-router";
+
+export const Route = createRootRoute({
+  component: () => (
+    <>
+      <header>
+        <nav>
+          <Link to="/">Home</Link>
+          <Link to="/about">About</Link>
+        </nav>
+      </header>
+      <Outlet />
+      <TanStackRouterDevtools />
+    </>
+  ),
+})
+```
+
+The `<TanStackRouterDevtools />` component is not required so you can remove it if you don't want it in your layout.
+
+More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
+
+
+## Data Fetching
+
+There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
+
+For example:
+
+```tsx
+const peopleRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/people",
+  loader: async () => {
+    const response = await fetch("https://swapi.dev/api/people");
+    return response.json() as Promise<{
+      results: {
+        name: string;
+      }[];
+    }>;
+  },
+  component: () => {
+    const data = peopleRoute.useLoaderData();
+    return (
+      <ul>
+        {data.results.map((person) => (
+          <li key={person.name}>{person.name}</li>
+        ))}
+      </ul>
+    );
+  },
+});
+```
+
+Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
+
+### React-Query
+
+React-Query is an excellent addition or alternative to route loading and integrating it into you application is a breeze.
+
+First add your dependencies:
 
 ```bash
-cd Back-end
-rm kalafo.db
-python init_db.py
+npm install @tanstack/react-query @tanstack/react-query-devtools
 ```
 
-### Frontend Configuration
+Next we'll need to create a query client and provider. We recommend putting those in `main.tsx`.
 
-- **API Base URL**: Configured in `AuthContext.js`
-- **Routing**: Managed in `App.js`
-- **Styling**: Tailwind CSS utilities
+```tsx
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-## 📄 License
+// ...
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+const queryClient = new QueryClient();
 
-## 👨‍💻 Developer
+// ...
 
-**[To be updated :)]**
+if (!rootElement.innerHTML) {
+  const root = ReactDOM.createRoot(rootElement);
 
-- GitHub: [](https://github.com/yourusername)
-- Email:
-- LinkedIn: [](https://linkedin.com/in/yourprofile)
+  root.render(
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
+}
+```
 
-## 🙏 Acknowledgments
+You can also add TanStack Query Devtools to the root route (optional).
 
-- **Flask Community** for excellent documentation
-- **React Team** for the amazing framework
-- **Tailwind CSS** for beautiful styling utilities
-- **JWT.io** for authentication guidance
+```tsx
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
-**⭐ If you find this project helpful, please give it a star on GitHub!**
+const rootRoute = createRootRoute({
+  component: () => (
+    <>
+      <Outlet />
+      <ReactQueryDevtools buttonPosition="top-right" />
+      <TanStackRouterDevtools />
+    </>
+  ),
+});
+```
 
----
+Now you can use `useQuery` to fetch your data.
 
-_Last updated: July 2025_
+```tsx
+import { useQuery } from "@tanstack/react-query";
+
+import "./App.css";
+
+function App() {
+  const { data } = useQuery({
+    queryKey: ["people"],
+    queryFn: () =>
+      fetch("https://swapi.dev/api/people")
+        .then((res) => res.json())
+        .then((data) => data.results as { name: string }[]),
+    initialData: [],
+  });
+
+  return (
+    <div>
+      <ul>
+        {data.map((person) => (
+          <li key={person.name}>{person.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default App;
+```
+
+You can find out everything you need to know on how to use React-Query in the [React-Query documentation](https://tanstack.com/query/latest/docs/framework/react/overview).
+
+## State Management
+
+Another common requirement for React applications is state management. There are many options for state management in React. TanStack Store provides a great starting point for your project.
+
+First you need to add TanStack Store as a dependency:
+
+```bash
+npm install @tanstack/store
+```
+
+Now let's create a simple counter in the `src/App.tsx` file as a demonstration.
+
+```tsx
+import { useStore } from "@tanstack/react-store";
+import { Store } from "@tanstack/store";
+import "./App.css";
+
+const countStore = new Store(0);
+
+function App() {
+  const count = useStore(countStore);
+  return (
+    <div>
+      <button onClick={() => countStore.setState((n) => n + 1)}>
+        Increment - {count}
+      </button>
+    </div>
+  );
+}
+
+export default App;
+```
+
+One of the many nice features of TanStack Store is the ability to derive state from other state. That derived state will update when the base state updates.
+
+Let's check this out by doubling the count using derived state.
+
+```tsx
+import { useStore } from "@tanstack/react-store";
+import { Store, Derived } from "@tanstack/store";
+import "./App.css";
+
+const countStore = new Store(0);
+
+const doubledStore = new Derived({
+  fn: () => countStore.state * 2,
+  deps: [countStore],
+});
+doubledStore.mount();
+
+function App() {
+  const count = useStore(countStore);
+  const doubledCount = useStore(doubledStore);
+
+  return (
+    <div>
+      <button onClick={() => countStore.setState((n) => n + 1)}>
+        Increment - {count}
+      </button>
+      <div>Doubled - {doubledCount}</div>
+    </div>
+  );
+}
+
+export default App;
+```
+
+We use the `Derived` class to create a new store that is derived from another store. The `Derived` class has a `mount` method that will start the derived store updating.
+
+Once we've created the derived store we can use it in the `App` component just like we would any other store using the `useStore` hook.
+
+You can find out everything you need to know on how to use TanStack Store in the [TanStack Store documentation](https://tanstack.com/store/latest).
+
+# Demo files
+
+Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
+
+# Learn More
+
+You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
