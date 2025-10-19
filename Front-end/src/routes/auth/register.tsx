@@ -129,7 +129,7 @@ function RegisterPage() {
                 <div className="space-y-2">
                   <Label htmlFor="title">Title</Label>
                   <Select value={title} onValueChange={setTitle}>
-                    <SelectTrigger id="title">
+                    <SelectTrigger id="title" className="w-full">
                       <SelectValue placeholder="Select your title" />
                     </SelectTrigger>
                     <SelectContent>
@@ -152,6 +152,7 @@ function RegisterPage() {
                       placeholder="John"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
+                      className="w-full"
                     />
                   </div>
                   <div className="space-y-2">
@@ -162,6 +163,7 @@ function RegisterPage() {
                       placeholder="Doe"
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
+                      className="w-full"
                     />
                   </div>
                 </div>
@@ -170,7 +172,7 @@ function RegisterPage() {
                 <div className="space-y-2">
                   <Label htmlFor="gender">Gender</Label>
                   <Select value={gender} onValueChange={setGender}>
-                    <SelectTrigger id="gender">
+                    <SelectTrigger id="gender" className="w-full">
                       <SelectValue placeholder="Select your gender" />
                     </SelectTrigger>
                     <SelectContent>
@@ -191,6 +193,7 @@ function RegisterPage() {
                     placeholder="john@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className="w-full"
                   />
                 </div>
 
@@ -198,7 +201,7 @@ function RegisterPage() {
                 <div className="space-y-2">
                   <Label htmlFor="role">I am a</Label>
                   <Select value={role} onValueChange={(v) => setRole(v as Role)}>
-                    <SelectTrigger id="role">
+                    <SelectTrigger id="role" className="w-full">
                       <SelectValue placeholder="Select your role" />
                     </SelectTrigger>
                     <SelectContent>
@@ -219,12 +222,12 @@ function RegisterPage() {
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="pr-10"
+                      className="w-full pr-10"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
                       {showPassword ? (
@@ -237,14 +240,16 @@ function RegisterPage() {
                 </div>
 
                 {error && (
-                  <p className="text-sm text-red-600" role="alert" aria-live="polite">
-                    {error}
-                  </p>
+                  <div className="rounded-md bg-red-50 p-3">
+                    <p className="text-sm text-red-600" role="alert" aria-live="polite">
+                      {error}
+                    </p>
+                  </div>
                 )}
 
                 <Button
                   type="submit"
-                  className="w-full bg-teal-600 hover:bg-teal-700"
+                  className="w-full bg-teal-600 hover:bg-teal-700 transition-colors"
                   disabled={mutation.isPending}
                 >
                   {mutation.isPending ? 'Creating…' : 'Create Account'}
@@ -255,7 +260,7 @@ function RegisterPage() {
                 Already have an account?{' '}
                 <Link
                   to="/auth"
-                  className="font-medium text-teal-600 hover:text-teal-700 hover:underline"
+                  className="font-medium text-teal-600 hover:text-teal-700 hover:underline transition-colors"
                 >
                   Sign in
                 </Link>
