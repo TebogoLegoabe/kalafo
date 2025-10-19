@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Heart, Eye, EyeOff } from 'lucide-react'
+import { Heart, Eye, EyeOff, CheckCircle } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 export const Route = createFileRoute('/auth/register')({
@@ -26,6 +26,7 @@ function RegisterPage() {
   const [password, setPassword] = useState<string>('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [registered, setRegistered] = useState(false)
 
   useEffect(() => {
     document.title = 'Register | Kalafo'
@@ -41,8 +42,8 @@ function RegisterPage() {
         last_name: lastName,
       }),
     onSuccess: () => {
-      toast.success('Registration successful! Please sign in.')
-      navigate({ to: '/auth' })
+      toast.success('Registration successful!')
+      setRegistered(true)
     },
     onError: (err) => {
       const msg = getApiErrorMessage(err)
@@ -60,6 +61,44 @@ function RegisterPage() {
     }
     setError(null)
     mutation.mutate()
+  }
+
+  // Success view after registration
+  if (registered) {
+    return (
+      <div className="flex items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35 }}
+          className="w-full max-w-md"
+        >
+          <Card className="border border-teal-100 shadow-lg">
+            <CardHeader className="space-y-3 text-center">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-teal-50">
+                <CheckCircle className="h-7 w-7 text-teal-600" />
+              </div>
+              <CardTitle className="text-2xl">Account created</CardTitle>
+              <CardDescription>Your registration was successful. You can now sign in.</CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-3">
+              <Button
+                className="w-full bg-teal-600 hover:bg-teal-700"
+                onClick={() => navigate({ to: '/auth' })}
+              >
+                Go to login
+              </Button>
+              <p className="text-center text-sm text-gray-600">
+                Or{' '}
+                <Link to="/" className="text-teal-600 hover:text-teal-700 hover:underline">
+                  return home
+                </Link>
+              </p>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    )
   }
 
   return (

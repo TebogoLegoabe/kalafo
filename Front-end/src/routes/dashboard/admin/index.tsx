@@ -186,6 +186,9 @@ function RouteComponent() {
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value)
+                  // Clear other filters when searching
+                  setRoleFilter('all')
+                  setStatusFilter('all')
                   handleFilterChange()
                 }}
                 className="pl-9"
