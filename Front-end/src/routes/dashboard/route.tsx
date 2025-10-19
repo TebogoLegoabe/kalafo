@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, Link, useRouterState, useNavigate } from '@tanstack/react-router'
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { LayoutDashboard, CalendarDays, Users, Stethoscope, FileText, Activity, ClipboardList, User2, ShieldCheck, ShieldAlert, LogOut } from 'lucide-react'
 import type { Role } from '@/api/kalafo'
 import { useAuthStore } from '@/stores/auth'
@@ -27,6 +27,43 @@ function RouteComponent() {
   const logout = useAuthStore((s) => s.logout)
   const role: Role = (user?.role as Role) ?? 'patient'
   const [showSignOutDialog, setShowSignOutDialog] = useState(false)
+
+  // Role home routes
+  const roleHome: Record<Role, string> = {
+    admin: '/dashboard/admin',
+    doctor: '/dashboard/doctor',
+    patient: '/dashboard',
+  }
+
+  // Authorization check per role and path
+  const isAllowedPath = (r: Role, path: string) => {
+    if (r === 'admin') return path.startsWith('/dashboard')
+
+    if (r === 'doctor') {
+      // Allow only doctor section
+      return path === '/dashboard/doctor' || path.startsWith('/dashboard/doctor/')
+    }
+
+    // patient
+    const exact = ['/dashboard']
+    const prefixes = [
+      '/dashboard/appointments',
+      '/dashboard/history',
+      '/dashboard/health-data',
+      '/dashboard/profile',
+    ]
+    if (exact.includes(path)) return true
+    return prefixes.some((p) => path === p || path.startsWith(`${p}/`))
+  }
+
+  const unauthorized = !!user && !isAllowedPath(role, pathname)
+
+  // Auto-redirect if user hits an unauthorized path
+  useEffect(() => {
+    if (unauthorized) {
+      navigate({ to: roleHome[role], replace: true })
+    }
+  }, [unauthorized, navigate, role, roleHome])
 
   const handleSignOut = () => {
     logout()
@@ -183,6 +220,17 @@ function RouteComponent() {
                     </p>
                     <Button asChild className="bg-teal-600 hover:bg-teal-700">
                       <Link to="/auth">Go to Sign In</Link>
+                    </Button>
+                  </div>
+                ) : unauthorized ? (
+                  <div className="text-center py-12">
+                    <ShieldAlert className="mx-auto h-10 w-10 text-teal-600 mb-3" />
+                    <h2 className="text-xl font-semibold mb-2">No permission</h2>
+                    <p className="text-sm text-gray-600 mb-6">
+                      You do not have permission to view this page.
+                    </p>
+                    <Button asChild className="bg-teal-600 hover:bg-teal-700">
+                      <Link to={roleHome[role]}>Go to my dashboard</Link>
                     </Button>
                   </div>
                 ) : (
