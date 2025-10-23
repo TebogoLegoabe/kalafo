@@ -5,5 +5,7 @@ export const Route = createFileRoute('/dashboard/doctor/schedule')({
 })
 
 function RouteComponent() {
-  return <div>Hello "/dashboard/doctor/schedule"!</div>
+  return <div>
+    <title>Doctor's Schedule - Kalafo</title>
+    schedules</div>
 }

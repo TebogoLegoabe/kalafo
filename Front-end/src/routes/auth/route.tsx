@@ -20,10 +20,11 @@ function RouteComponent() {
         <div className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,white,transparent_70%)] bg-[linear-gradient(to_right,rgba(14,165,233,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(14,165,233,0.05)_1px,transparent_1px)] bg-[size:32px_32px]" />
       </div>
 
-      {/* Header with Back button and Logo */}
+      {/* Header with Back (left) and Logo (right as link) */}
       <div className="border-b bg-white/50 backdrop-blur-sm">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
+            {/* Back on the left */}
             <Button variant="ghost" className="text-gray-700 hover:text-teal-600" asChild>
               <Link to="/">
                 <ArrowLeft className="h-4 w-4 mr-2" />
@@ -31,12 +32,11 @@ function RouteComponent() {
               </Link>
             </Button>
 
-            <div className="flex items-center gap-2">
+            {/* Logo on the right, linked to "/" */}
+            <Link to="/" className="flex items-center gap-2 text-gray-900 hover:text-teal-700">
               <Heart className="h-5 w-5 text-teal-600" />
-              <span className="text-lg font-semibold text-gray-900">KALAFO</span>
-            </div>
-
-            <div className="w-[120px]"></div> {/* Spacer for center alignment */}
+              <span className="text-lg font-semibold">KALAFO</span>
+            </Link>
           </div>
         </div>
       </div>

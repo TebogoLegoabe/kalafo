@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { healthCheck, getApiErrorMessage } from '@/api/kalafo'
 import { Button } from '@/components/ui/button'
@@ -18,9 +18,7 @@ function ForgotPasswordPage() {
   const [message, setMessage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    document.title = 'Forgot Password | Kalafo'
-  }, [])
+ 
 
   // Placeholder: no forgot endpoint provided. Do a health check to verify backend up, then show message.
   const mutation = useMutation({
@@ -45,6 +43,7 @@ function ForgotPasswordPage() {
 
   return (
     <div className="flex items-center justify-center">
+      <title>Forgot Password - Kalafo</title>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

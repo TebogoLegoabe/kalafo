@@ -10,9 +10,11 @@ function RouteComponent() {
   
 
   return (
+    
     <div>
-      <div>Hello "/dashboard/"!</div>
-      
-    </div>
+      <title>Patient's Dashboard - Kalafo</title>
+      patient's dashboard
+      </div>
+    
   )
 }
