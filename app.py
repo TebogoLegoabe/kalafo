@@ -30,6 +30,7 @@ CORS(app,
          "http://localhost:5173",
          "https://kalafo.com",
          "https://www.kalafo.com",
+          "https://kalafo.vercel.app",
          "https://*.vercel.app"   
      ],
      methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
