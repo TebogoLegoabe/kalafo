@@ -1,6 +1,0 @@
-{
-"buildCommand": "cd Front-end && npm install && npm run build",
-"outputDirectory": "Front-end/dist",
-"installCommand": "cd Front-end && npm install",
-"devCommand": "cd Front-end && npm run dev"
-}
