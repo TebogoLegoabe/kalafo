@@ -106,7 +106,7 @@ pip install -r requirements.txt
 python init_db.py
 
 # Start Flask server
-python run.py
+python app.py
 ```
 
 #### 3. Frontend Setup
