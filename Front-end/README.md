@@ -1,6 +1,6 @@
 # Kalafo Frontend - Telemedicine Platform
 
-A modern React-based telemedicine platform frontend built with TanStack Router, React Query, and Tailwind CSS. This application provides role-based dashboards for patients, doctors, and administrators with secure authentication and real-time data management.
+A modern React-based telemedicine platform frontend built with TanStack Router, React Query, and Tailwind CSS. This application offers role-based dashboards for patients, doctors, and administrators, featuring secure authentication and real-time data management.
 
 ## 🎯 Project Overview
 
@@ -13,7 +13,7 @@ Kalafo is a comprehensive telemedicine solution that connects patients with heal
 ## 🛠️ Tech Stack & Libraries
 
 ### Core Framework
-- **React 18** - Modern React with hooks and concurrent features
+- **React 19** - Modern React with hooks and concurrent features
 - **TypeScript** - Type-safe development with full IDE support
 - **Vite** - Lightning-fast build tool and dev server
 
@@ -351,11 +351,5 @@ Outputs to `dist/` directory. Deploy to any static hosting service (Vercel, Netl
 2. Follow existing code style and conventions
 3. Test thoroughly before submitting PR
 4. Update this README if adding new features
-
-## 📄 License
-
-MIT License - see LICENSE file for details
-
----
 
 **Built with ❤️ by the Kalafo Team**
